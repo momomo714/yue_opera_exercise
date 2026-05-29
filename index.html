@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>越剧文脉守护者 · 永兴戏班七日劫</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -11,21 +11,23 @@
     <!-- 背景层 -->
     <div class="bg-layer" id="bgLayer"></div>
     
-    <!-- 立绘层 (左下) -->
+    <!-- 立绘层 -->
     <div class="sprite-layer" id="spriteLayer">
-        <img id="charSprite" src="" alt="" style="display: none;">
+        <img id="charSprite" src="" alt="">
     </div>
 
-    <!-- UI 层 -->
-    <div class="game-container">
-        <div class="stats-panel" id="statsPanel"></div>
-        <div class="story-area" id="storyArea">
-            <div class="story-text" id="storyText"></div>
-        </div>
-        <div class="options-area" id="optionsArea"></div>
-        <!-- 继续按钮区域会由 js 动态添加，但也可预置 -->
-        <footer>⚡ 文脉不死 · 薪火相传 ⚡</footer>
+    <!-- 顶部数值面板 -->
+    <div class="stats-panel" id="statsPanel"></div>
+
+    <!-- 底部对话框区域 -->
+    <div class="dialog-area" id="dialogArea">
+        <div class="dialog-name" id="dialogName"></div>
+        <div class="dialog-text" id="dialogText"></div>
+        <div class="next-indicator" id="nextIndicator">▼ 点击继续 ▼</div>
     </div>
+
+    <!-- 选项按钮区域（默认隐藏） -->
+    <div class="options-area" id="optionsArea"></div>
 </div>
 
 <script type="module" src="js/main.js"></script>

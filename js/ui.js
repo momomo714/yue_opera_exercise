@@ -1,120 +1,123 @@
 import { gameState } from './gameState.js';
 import { storyEngine } from './storyEngine.js';
 
-let storyDiv, optionsDiv, nextDiv, statsPanel;
 let bgLayer, charSprite;
-let messageQueue = [];
+let statsPanel;
+let dialogNameEl, dialogTextEl, dialogArea;
+let optionsDiv;
+
+// 对话队列
+let dialogueQueue = [];      // 存储 { html, speaker }
 let isWaitingForOption = false;
-let currentSceneCallback = null; // 当队列清空后要执行的回调（如结束场景）
+let currentSceneCallback = null;  // 当队列清空后执行的函数（例如结束场景）
 
 export function initUI() {
-    storyDiv = document.getElementById('storyText');
-    optionsDiv = document.getElementById('optionsArea');
-    nextDiv = document.getElementById('nextArea');
-    statsPanel = document.getElementById('statsPanel');
     bgLayer = document.getElementById('bgLayer');
     charSprite = document.getElementById('charSprite');
+    statsPanel = document.getElementById('statsPanel');
+    dialogNameEl = document.getElementById('dialogName');
+    dialogTextEl = document.getElementById('dialogText');
+    dialogArea = document.getElementById('dialogArea');
+    optionsDiv = document.getElementById('optionsArea');
     
-    // 创建“继续”按钮区域
-    if (!nextDiv) {
-        const container = document.querySelector('.game-container');
-        const nextArea = document.createElement('div');
-        nextArea.id = 'nextArea';
-        nextArea.className = 'next-area';
-        nextArea.innerHTML = '<button class="next-button" id="nextButton">▼ 继续 ▼</button>';
-        container.appendChild(nextArea);
-        nextDiv = nextArea;
-    }
-    document.getElementById('nextButton')?.addEventListener('click', () => {
-        if (!isWaitingForOption && messageQueue.length === 0 && !storyEngine.isProcessing) {
-            // 如果队列空且不在选项等待，尝试推进剧情（例如序章的第一条消息已经显示完毕）
-            storyEngine.advance();
-        } else if (!isWaitingForOption && messageQueue.length > 0) {
-            displayNextMessage();
+    // 点击对话框区域推进
+    dialogArea.addEventListener('click', () => {
+        if (!isWaitingForOption && dialogueQueue.length > 0) {
+            displayNextDialogue();
+        } else if (!isWaitingForOption && dialogueQueue.length === 0) {
+            // 队列空，可能场景结束需要回调
+            if (currentSceneCallback) {
+                const cb = currentSceneCallback;
+                currentSceneCallback = null;
+                cb();
+            }
         }
     });
     
     updateStatsDisplay();
+    // 初始隐藏选项区
+    optionsDiv.classList.add('hide');
 }
 
-// 显示下一条消息
-function displayNextMessage() {
+// 显示下一条对话
+function displayNextDialogue() {
     if (isWaitingForOption) return;
-    if (messageQueue.length === 0) {
-        // 队列空：如果还有后续剧情，调用 storyEngine 的推进方法
-        if (!storyEngine.isProcessing) {
-            storyEngine.advance();
+    if (dialogueQueue.length === 0) {
+        // 队列空：如果有场景结束回调则执行
+        if (currentSceneCallback) {
+            const cb = currentSceneCallback;
+            currentSceneCallback = null;
+            cb();
         }
         return;
     }
-    const msg = messageQueue.shift();
-    const msgDiv = document.createElement('div');
-    msgDiv.className = 'message-item';
-    if (msg.speaker) {
-        const nameSpan = document.createElement('div');
-        nameSpan.className = 'dialog-name';
-        nameSpan.innerText = `🎭 ${msg.speaker}`;
-        msgDiv.appendChild(nameSpan);
-    }
-    const contentDiv = document.createElement('div');
-    contentDiv.innerHTML = msg.html; // 支持HTML
-    msgDiv.appendChild(contentDiv);
-    storyDiv.appendChild(msgDiv);
-    // 自动滚动到底部
-    const storyArea = document.getElementById('storyArea');
-    if (storyArea) storyArea.scrollTop = storyArea.scrollHeight;
+    const msg = dialogueQueue.shift();
+    dialogNameEl.innerText = msg.speaker ? `🎭 ${msg.speaker}` : '';
+    dialogTextEl.innerHTML = msg.html;
+    // 滚动效果可以通过动画，简单起见不加滚动
 }
 
-// 外部调用：添加一条消息到队列（可批量）
+// 外部添加一条对话（立即加入队列，如果当前没有显示则显示）
 export function addToStory(html, speaker = "") {
-    messageQueue.push({ html, speaker });
-    // 如果当前没有在显示且没有等待选项，立即开始显示
-    if (!isWaitingForOption && storyDiv && messageQueue.length === 1) {
-        displayNextMessage();
+    if (isWaitingForOption) {
+        // 如果正在等待选项，暂存到队列后面，等选项结束后再显示
+        dialogueQueue.push({ html, speaker });
+        return;
+    }
+    dialogueQueue.push({ html, speaker });
+    if (dialogueQueue.length === 1 && !isWaitingForOption) {
+        displayNextDialogue();
     }
 }
 
-// 批量添加（用于初始多个消息）
+// 批量添加（用于初始多个）
 export function addMultipleMessages(messages) {
-    messages.forEach(m => messageQueue.push(m));
-    if (!isWaitingForOption && messageQueue.length > 0 && storyDiv) {
-        displayNextMessage();
+    messages.forEach(m => dialogueQueue.push(m));
+    if (!isWaitingForOption && dialogueQueue.length > 0) {
+        displayNextDialogue();
     }
 }
 
-// 清空所有未显示的消息（用于场景切换）
+// 清空队列（场景切换时）
 export function clearMessageQueue() {
-    messageQueue = [];
+    dialogueQueue = [];
 }
 
-// 选项相关
-export function clearOptions() {
-    optionsDiv.innerHTML = "";
-}
-
+// 显示选项（会暂停自动推进）
 export function setOptions(buttons) {
     isWaitingForOption = true;
-    clearOptions();
+    optionsDiv.classList.remove('hide');
+    optionsDiv.innerHTML = '';
     buttons.forEach(btn => {
-        const buttonEl = document.createElement("button");
-        buttonEl.innerText = btn.label;
-        buttonEl.onclick = () => {
-            // 用户选择后，隐藏选项区域，恢复等待
-            clearOptions();
+        const btnEl = document.createElement('button');
+        btnEl.innerText = btn.label;
+        btnEl.onclick = () => {
+            // 隐藏选项区，恢复推进
+            optionsDiv.classList.add('hide');
             isWaitingForOption = false;
             if (btn.action) btn.action();
-            // 选择后可能立即有新的消息队列，开始显示
-            if (messageQueue.length > 0) displayNextMessage();
-            else storyEngine.advance(); // 触发下一步
+            // 选项点击后，如果队列还有未显示，立即显示下一条
+            if (dialogueQueue.length > 0) {
+                displayNextDialogue();
+            } else if (currentSceneCallback) {
+                // 如果没有更多对话且场景有结束回调，执行
+                const cb = currentSceneCallback;
+                currentSceneCallback = null;
+                cb();
+            }
         };
-        optionsDiv.appendChild(buttonEl);
+        optionsDiv.appendChild(btnEl);
     });
 }
 
-// 隐藏选项（用于某些情况）
 export function hideOptions() {
-    clearOptions();
+    optionsDiv.classList.add('hide');
     isWaitingForOption = false;
+}
+
+// 设置场景结束后的回调（当对话队列清空且没有选项时调用）
+export function setSceneEndCallback(callback) {
+    currentSceneCallback = callback;
 }
 
 export function setBackground(bgName) {
@@ -137,15 +140,15 @@ export function setCharacter(charName, visible = true) {
 export function updateStatsDisplay() {
     const s = gameState.state;
     statsPanel.innerHTML = `
-        <div class="stat">⚡ 文脉能量 <span class="stat-value">${s.energy}</span></div>
-        <div class="stat">⏳ 倒计时 <span class="stat-value">${s.daysLeft}天</span></div>
-        <div class="stat">🎭 改革信心 <span class="stat-value">${s.reformConfidence}</span></div>
-        <div class="stat">🤝 羁绊值 <span class="stat-value">${s.totalBond}</span></div>
-        <div class="stat">📖 行动力 <span class="stat-value">${s.actionPoints}</span></div>
+        <div class="stat">⚡ ${s.energy}</div>
+        <div class="stat">⏳ ${s.daysLeft}天</div>
+        <div class="stat">🎭 ${s.reformConfidence}</div>
+        <div class="stat">🤝 ${s.totalBond}</div>
+        <div class="stat">📖 ${s.actionPoints}</div>
     `;
 }
 
-// 消耗行动点并返回第一幕菜单（需要调用 storyEngine.showAct1Menu）
+// 消耗行动点并返回第一幕菜单（需要外部调用 showAct1Menu）
 export function reduceActionAndReturnToAct1() {
     const s = gameState.state;
     if (s.actPhase !== "act1") return;

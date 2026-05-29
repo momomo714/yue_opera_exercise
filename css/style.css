@@ -6,24 +6,24 @@
 body {
     margin: 0;
     min-height: 100vh;
-    background: #2b2b1f;
+    background: #1a1a1a;
     display: flex;
     justify-content: center;
     align-items: center;
     font-family: 'Segoe UI', '华文楷书', 'Microsoft YaHei', '宋体', serif;
-    padding: 20px;
+    overflow: hidden;
 }
 
 .game-wrapper {
     position: relative;
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    border-radius: 32px;
+    width: 100vw;
+    height: 100vh;
+    max-width: 100%;
     overflow: hidden;
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    background: #000;
 }
 
+/* 背景层 - 覆盖整个游戏区 */
 .bg-layer {
     position: absolute;
     top: 0;
@@ -32,167 +32,161 @@ body {
     height: 100%;
     background-size: cover;
     background-position: center;
-    filter: brightness(0.6);
+    filter: brightness(0.7);
     transition: background-image 0.3s ease;
     z-index: 0;
 }
 
-/* 立绘层 - 左下角，缩小宽度 */
+/* 立绘层 - 底部居中偏左，不遮挡对话框 */
 .sprite-layer {
     position: absolute;
-    bottom: 20px;
-    left: 20px;
-    width: 200px;   /* 缩小 */
+    bottom: 0;
+    left: 5%;
+    width: 30%;
+    max-width: 280px;
     z-index: 1;
     pointer-events: none;
+    transition: opacity 0.2s;
 }
 .sprite-layer img {
     width: 100%;
     height: auto;
-    filter: drop-shadow(4px 8px 12px rgba(0, 0, 0, 0.4));
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.5));
 }
 
-/* UI 层 - 移到右侧或下方，不遮挡立绘 */
-.game-container {
-    position: relative;
-    z-index: 2;
-    background: rgba(255, 252, 240, 0.92);
-    backdrop-filter: blur(4px);
-    border-radius: 32px;
-    margin: 20px 20px 20px 240px; /* 为左侧立绘留出空间 */
-    overflow: hidden;
-    border: 1px solid rgba(210, 180, 140, 0.6);
-}
-
+/* 顶部数值面板 - 半透明条，右上角 */
 .stats-panel {
-    background: #2d2418e0;
-    backdrop-filter: blur(4px);
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    z-index: 3;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(8px);
+    border-radius: 40px;
     padding: 8px 16px;
     display: flex;
     flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 8px;
-    border-bottom: 2px solid #dbbc87;
-    color: #f9e7c2;
-    text-shadow: 1px 1px 0 #3a2a1a;
+    gap: 12px;
+    color: #ffefcf;
     font-size: 13px;
     font-weight: bold;
+    border: 1px solid rgba(210, 180, 140, 0.4);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+    pointer-events: none;
 }
-
 .stat {
-    background: #1f1912;
-    padding: 4px 12px;
-    border-radius: 50px;
     display: inline-flex;
     align-items: center;
     gap: 6px;
+    background: rgba(30, 20, 15, 0.7);
+    padding: 4px 10px;
+    border-radius: 30px;
 }
-
 .stat-value {
-    color: #ffd966;
+    color: #ffcc66;
     font-family: monospace;
     font-size: 1.2rem;
-    min-width: 45px;
+    min-width: 40px;
+    text-align: center;
 }
 
-/* 故事区域：限制最大高度，可滚动 */
-.story-area {
-    padding: 20px 22px;
-    max-height: 400px;
-    overflow-y: auto;
-    background: transparent;
+/* 底部对话框 - 固定高度，半透明黑底 */
+.dialog-area {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.82);
+    backdrop-filter: blur(10px);
+    border-radius: 24px;
+    padding: 16px 24px;
+    z-index: 2;
+    border: 1px solid rgba(210, 180, 140, 0.5);
+    box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+    cursor: pointer;
+    transition: transform 0.1s ease;
 }
-
-.story-text {
-    font-size: 16px;
-    line-height: 1.6;
-    color: #2c241a;
-    white-space: pre-wrap;
-    word-break: break-word;
+.dialog-area:active {
+    transform: scale(0.99);
 }
-
-/* 单条消息的样式 */
-.message-item {
-    margin-bottom: 12px;
-    animation: fadeIn 0.2s ease;
-}
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(5px);}
-    to { opacity: 1; transform: translateY(0);}
-}
-
 .dialog-name {
+    font-size: 18px;
     font-weight: bold;
-    color: #b45f2b;
-    margin-bottom: 4px;
+    color: #e6c8a3;
     border-left: 4px solid #d99e4e;
     padding-left: 12px;
+    margin-bottom: 8px;
+    text-shadow: 0 1px 1px black;
+}
+.dialog-text {
+    font-size: 18px;
+    line-height: 1.5;
+    color: #fef0df;
+    text-shadow: 0 1px 1px black;
+    min-height: 70px;
+    word-break: break-word;
+}
+.next-indicator {
+    text-align: center;
+    font-size: 14px;
+    color: #d4b47c;
+    margin-top: 8px;
+    opacity: 0.7;
+    animation: pulse 1.2s infinite;
+}
+@keyframes pulse {
+    0% { opacity: 0.4; }
+    50% { opacity: 1; }
+    100% { opacity: 0.4; }
 }
 
-/* 选项区域 */
+/* 选项区域 - 出现在对话框上方 */
 .options-area {
-    padding: 12px 22px 20px;
+    position: absolute;
+    bottom: 180px; /* 对话框高度+间距 */
+    left: 20px;
+    right: 20px;
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
-    background: rgba(250, 243, 228, 0.95);
-    border-top: 1px solid #eedbba;
     justify-content: center;
+    z-index: 3;
+    background: transparent;
+    padding: 8px;
 }
-
-/* 继续按钮区域 */
-.next-area {
-    padding: 8px 22px 20px;
-    text-align: center;
-    background: rgba(250, 243, 228, 0.95);
-    border-top: 1px solid #eedbba;
-}
-
-.next-button {
-    background: #d9c5a7;
-    border: none;
-    padding: 10px 30px;
+.options-area button {
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(8px);
+    border: 1px solid #dbbc87;
+    padding: 12px 20px;
     border-radius: 48px;
     font-size: 16px;
-    font-weight: bold;
-    color: #4a3420;
-    cursor: pointer;
-    transition: all 0.2s;
-    font-family: inherit;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-.next-button:hover {
-    background: #cbb98c;
-    transform: translateY(-1px);
-}
-
-button {
-    background: #f1e5d2;
-    border: 1px solid #ccaa77;
-    padding: 10px 18px;
-    border-radius: 48px;
-    font-size: 14px;
     font-weight: 600;
-    color: #4a3420;
+    color: #ffefcf;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: 0.2s;
     font-family: inherit;
-    flex: 1 0 auto;
+    flex: 0 1 auto;
+    min-width: 160px;
+    text-shadow: 0 1px 1px black;
 }
-button:hover {
-    background: #e9d5b5;
-    border-color: #aa7e48;
-    transform: translateY(-1px);
-}
-
-hr {
-    display: none; /* 隐藏原有的分割线，用间距代替 */
+.options-area button:hover {
+    background: #6b4c2c;
+    border-color: #ffdd99;
+    transform: translateY(-2px);
 }
 
-footer {
-    font-size: 10px;
-    text-align: center;
-    padding: 8px;
-    background: #f2e5d4;
-    color: #a07544;
+/* 隐藏元素 */
+.hide {
+    display: none;
+}
+
+/* 响应式：小屏幕下字体缩小，立绘宽度减小 */
+@media (max-width: 600px) {
+    .dialog-text { font-size: 15px; }
+    .dialog-name { font-size: 15px; }
+    .sprite-layer { width: 40%; left: 0; }
+    .stats-panel { font-size: 11px; padding: 4px 12px; gap: 6px; }
+    .options-area button { font-size: 13px; padding: 8px 16px; min-width: 120px; }
+    .options-area { bottom: 160px; }
 }
