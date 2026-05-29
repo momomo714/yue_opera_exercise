@@ -6,8 +6,8 @@ export const storyEngine = {
     startPrologue() {
         setBackground('backstage');
         setCharacter(null, false);
-        
-        // 详细的开头，分多段叙述
+
+        // 详细开头（可自行扩充）
         addToStory("【序幕：时空错位】", "");
         addToStory("公元2024年，你是一名越剧研究者，正在上海图书馆查阅1942年的《越剧日报》微缩胶卷。", "");
         addToStory("泛黄的报纸上，一行刺眼标题映入眼帘：「越剧危机深重，名角袁雪芬改革受阻，戏班濒临解散」。", "");
@@ -28,7 +28,7 @@ export const storyEngine = {
         addToStory("「留下，包吃住没工钱。三天写不出新戏，滚蛋！」", "周班主");
         addToStory("你正要解释，系统弹出提示：", "系统");
         addToStory("「接受使命，成为戏班编剧，七日内推动《祥林嫂》新戏上演。」", "系统");
-        
+
         setSceneEndCallback(() => {
             setOptions([{ label: "📜 接受使命，开始七日守护", action: () => {
                 addToStory("你深吸一口气，抱拳：「定不辱命。」", "主角");
@@ -61,12 +61,7 @@ export const storyEngine = {
         sceneFn();
     },
 
-    // 以下部分与之前相同，保持原有辩论、结局等逻辑不变...
-    // 为了节省篇幅，这里省略（但实际应保留从 triggerEndOfAct1 到 evaluateEnding 的完整内容）
-    // 注意：需要将这部分复制过来，确保完整性。
-    // 由于之前已经给出过完整 storyEngine，只需替换 startPrologue 和 showAct1Menu，其余函数不变。
-    // 请在实际文件中保留原有的 triggerEndOfAct1, startDebate, debateRound1~3, finishDebate, startNightChoice, afterNightChoice, evaluateEnding 等。
-triggerEndOfAct1() {
+    triggerEndOfAct1() {
         if (gameState.state.actPhase !== "act1") return;
         gameState.update({ actPhase: "debate", daysLeft: 4 });
         updateStatsDisplay();
@@ -78,10 +73,7 @@ triggerEndOfAct1() {
         setBackground('meeting');
         setCharacter(null, false);
         addToStory("议事厅内，你呈上《祥林嫂》提纲。老琴师拍桌反对。", "场景");
-        // 等待对话显示完毕后再出选项
-        setSceneEndCallback(() => {
-            this.debateRound1();
-        });
+        setSceneEndCallback(() => { this.debateRound1(); });
     },
 
     debateRound1() {
@@ -164,9 +156,7 @@ triggerEndOfAct1() {
         } else {
             addToStory(`⚠️ 当前信心${gameState.state.reformConfidence}未达70，但勉强推进。`, "系统");
         }
-        setSceneEndCallback(() => {
-            this.startNightChoice();
-        });
+        setSceneEndCallback(() => { this.startNightChoice(); });
     },
 
     startNightChoice() {
@@ -213,9 +203,7 @@ triggerEndOfAct1() {
         if (gameState.state.xiaochunProgress === 100 && gameState.state.qinshiProgress === 100) gameState.modify('reformConfidence', 5);
         updateStatsDisplay();
         addToStory("新戏上演！台下抽泣声如潮，掌声雷动。改革大获成功！", "祥林嫂·首演");
-        setSceneEndCallback(() => {
-            this.evaluateEnding();
-        });
+        setSceneEndCallback(() => { this.evaluateEnding(); });
     },
 
     evaluateEnding() {
@@ -231,12 +219,61 @@ triggerEndOfAct1() {
             setOptions([{label: "重开戏梦", action: () => location.reload()}]);
             return;
         }
-        setSceneEndCallback(() => {
+        // 成功结局后，展示人物卡
+        this.showCharacterProfiles(() => {
             setOptions([{label: "领取传承证书", action: () => {
                 addToStory("🏮 文脉守护者证书：跨越时空，为传统续命。感谢您。🏮", "落幕");
                 setOptions([{label: "结束旅程", action: () => {}}]);
             }}]);
         });
-    }
+    },
 
+    // 人物卡展示函数
+    showCharacterProfiles(onComplete) {
+        const profiles = [
+            {
+                name: "袁雪芬",
+                role: "越剧改革先驱",
+                原型简介: "袁雪芬（1922-2011），越剧袁派创始人，1942年起在上海率先推动越剧改革，将鲁迅小说《祝福》改编为《祥林嫂》，开创越剧现代戏先河。",
+                故事: "她不顾守旧势力的反对，坚持‘越剧应该反映现实，唤醒民众’。在抗战时期，她以《祥林嫂》控诉封建礼教，连演30余场，场场爆满，被誉为‘越剧的鲁迅’。",
+                精神: "「真正的艺术，必须与时代共振。」"
+            },
+            {
+                name: "周班主",
+                role: "戏班班主（原型：姚水娟等戏班经营者）",
+                原型简介: "1940年代上海越剧戏班班主多为从艺者转型，他们既要维持生计，又要守护艺术。典型代表如姚水娟的班主王锦云，曾冒险支持《祥林嫂》排演。",
+                故事: "在战乱年代，班主们常负债经营，甚至变卖家产供戏班演出。他们是最早的‘文脉守护者’，用肩膀扛起了越剧的生存。",
+                精神: "「戏可以赔钱，但不能断了根。」"
+            },
+            {
+                name: "老琴师",
+                role: "越剧琴师（原型：周宝财等）",
+                原型简介: "周宝财（1900-1965），越剧主胡革新者，首创‘过门’托腔技法，使越剧唱腔更具表现力。他曾在《祥林嫂》中设计出催人泪下的悲调。",
+                故事: "老琴师们口传心授，记下数百首传统曲牌。他们反对的不是改革，而是粗暴的割裂。周宝财曾说：‘要改，但要留住魂。’",
+                精神: "「琴弦不断，血脉不绝。」"
+            },
+            {
+                name: "小春",
+                role: "戏班学徒（原型：无数越剧演员的童年）",
+                原型简介: "旧社会学徒大多出身贫苦，七八岁便被送入戏班，签‘生死契’，挨打挨骂是常事。但正是这些孩子，后来成为越剧的中坚力量。",
+                故事: "如袁雪芬11岁学艺，傅全香9岁入科班。他们从识字开始，一步步成为流派宗师。小春象征着未来的希望。",
+                精神: "「每一滴泪，都会浇灌出花朵。」"
+            }
+        ];
+        
+        let index = 0;
+        const showNext = () => {
+            if (index >= profiles.length) {
+                if (onComplete) onComplete();
+                return;
+            }
+            const p = profiles[index];
+            addToStory(`【人物卡 · ${p.name}】<br><strong>${p.role}</strong><br>${p.原型简介}<br><br>${p.故事}<br><br><em>“${p.精神}”</em>`, "文脉系统");
+            setSceneEndCallback(() => {
+                index++;
+                showNext();
+            });
+        };
+        showNext();
+    }
 };
