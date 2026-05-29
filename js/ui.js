@@ -4,12 +4,12 @@ import { storyEngine } from './storyEngine.js';
 let bgLayer, charSprite;
 let statsPanel;
 let dialogNameEl, dialogTextEl, dialogArea;
-let optionsDiv;
+let optionsContainer;
+let nextIndicator;
 
-// 对话队列
-let dialogueQueue = [];      // 存储 { html, speaker }
+let dialogueQueue = [];
 let isWaitingForOption = false;
-let currentSceneCallback = null;  // 当队列清空后执行的函数（例如结束场景）
+let currentSceneCallback = null;
 
 export function initUI() {
     bgLayer = document.getElementById('bgLayer');
@@ -18,32 +18,29 @@ export function initUI() {
     dialogNameEl = document.getElementById('dialogName');
     dialogTextEl = document.getElementById('dialogText');
     dialogArea = document.getElementById('dialogArea');
-    optionsDiv = document.getElementById('optionsArea');
+    optionsContainer = document.getElementById('optionsContainer');
+    nextIndicator = document.getElementById('nextIndicator');
     
-    // 点击对话框区域推进
-    dialogArea.addEventListener('click', () => {
+    // 点击对话框区域推进（但要注意如果点击的是按钮，不触发）
+    dialogArea.addEventListener('click', (e) => {
+        // 如果点击的目标是按钮，忽略
+        if (e.target.tagName === 'BUTTON') return;
         if (!isWaitingForOption && dialogueQueue.length > 0) {
             displayNextDialogue();
-        } else if (!isWaitingForOption && dialogueQueue.length === 0) {
-            // 队列空，可能场景结束需要回调
-            if (currentSceneCallback) {
-                const cb = currentSceneCallback;
-                currentSceneCallback = null;
-                cb();
-            }
+        } else if (!isWaitingForOption && dialogueQueue.length === 0 && currentSceneCallback) {
+            const cb = currentSceneCallback;
+            currentSceneCallback = null;
+            cb();
         }
     });
     
     updateStatsDisplay();
-    // 初始隐藏选项区
-    optionsDiv.classList.add('hide');
+    hideOptionsContainer();
 }
 
-// 显示下一条对话
 function displayNextDialogue() {
     if (isWaitingForOption) return;
     if (dialogueQueue.length === 0) {
-        // 队列空：如果有场景结束回调则执行
         if (currentSceneCallback) {
             const cb = currentSceneCallback;
             currentSceneCallback = null;
@@ -54,23 +51,15 @@ function displayNextDialogue() {
     const msg = dialogueQueue.shift();
     dialogNameEl.innerText = msg.speaker ? `🎭 ${msg.speaker}` : '';
     dialogTextEl.innerHTML = msg.html;
-    // 滚动效果可以通过动画，简单起见不加滚动
 }
 
-// 外部添加一条对话（立即加入队列，如果当前没有显示则显示）
 export function addToStory(html, speaker = "") {
-    if (isWaitingForOption) {
-        // 如果正在等待选项，暂存到队列后面，等选项结束后再显示
-        dialogueQueue.push({ html, speaker });
-        return;
-    }
     dialogueQueue.push({ html, speaker });
     if (dialogueQueue.length === 1 && !isWaitingForOption) {
         displayNextDialogue();
     }
 }
 
-// 批量添加（用于初始多个）
 export function addMultipleMessages(messages) {
     messages.forEach(m => dialogueQueue.push(m));
     if (!isWaitingForOption && dialogueQueue.length > 0) {
@@ -78,44 +67,48 @@ export function addMultipleMessages(messages) {
     }
 }
 
-// 清空队列（场景切换时）
 export function clearMessageQueue() {
     dialogueQueue = [];
 }
 
-// 显示选项（会暂停自动推进）
+function hideOptionsContainer() {
+    optionsContainer.innerHTML = '';
+    optionsContainer.classList.add('hide');
+}
+
+function showOptionsContainer() {
+    optionsContainer.classList.remove('hide');
+}
+
 export function setOptions(buttons) {
     isWaitingForOption = true;
-    optionsDiv.classList.remove('hide');
-    optionsDiv.innerHTML = '';
+    showOptionsContainer();
+    optionsContainer.innerHTML = '';
     buttons.forEach(btn => {
         const btnEl = document.createElement('button');
         btnEl.innerText = btn.label;
-        btnEl.onclick = () => {
-            // 隐藏选项区，恢复推进
-            optionsDiv.classList.add('hide');
+        btnEl.onclick = (e) => {
+            e.stopPropagation();
+            hideOptionsContainer();
             isWaitingForOption = false;
             if (btn.action) btn.action();
-            // 选项点击后，如果队列还有未显示，立即显示下一条
             if (dialogueQueue.length > 0) {
                 displayNextDialogue();
             } else if (currentSceneCallback) {
-                // 如果没有更多对话且场景有结束回调，执行
                 const cb = currentSceneCallback;
                 currentSceneCallback = null;
                 cb();
             }
         };
-        optionsDiv.appendChild(btnEl);
+        optionsContainer.appendChild(btnEl);
     });
 }
 
 export function hideOptions() {
-    optionsDiv.classList.add('hide');
+    hideOptionsContainer();
     isWaitingForOption = false;
 }
 
-// 设置场景结束后的回调（当对话队列清空且没有选项时调用）
 export function setSceneEndCallback(callback) {
     currentSceneCallback = callback;
 }
@@ -148,7 +141,6 @@ export function updateStatsDisplay() {
     `;
 }
 
-// 消耗行动点并返回第一幕菜单（需要外部调用 showAct1Menu）
 export function reduceActionAndReturnToAct1() {
     const s = gameState.state;
     if (s.actPhase !== "act1") return;

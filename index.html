@@ -11,7 +11,7 @@
     <!-- 背景层 -->
     <div class="bg-layer" id="bgLayer"></div>
     
-    <!-- 立绘层 -->
+    <!-- 立绘层 (对话框上方) -->
     <div class="sprite-layer" id="spriteLayer">
         <img id="charSprite" src="" alt="">
     </div>
@@ -19,15 +19,13 @@
     <!-- 顶部数值面板 -->
     <div class="stats-panel" id="statsPanel"></div>
 
-    <!-- 底部对话框区域 -->
+    <!-- 底部对话框区域（包含说话人、文本、选项、继续指示） -->
     <div class="dialog-area" id="dialogArea">
         <div class="dialog-name" id="dialogName"></div>
         <div class="dialog-text" id="dialogText"></div>
+        <div class="options-container" id="optionsContainer"></div>   <!-- 选项放在这里 -->
         <div class="next-indicator" id="nextIndicator">▼ 点击继续 ▼</div>
     </div>
-
-    <!-- 选项按钮区域（默认隐藏） -->
-    <div class="options-area" id="optionsArea"></div>
 </div>
 
 <script type="module" src="js/main.js"></script>

@@ -6,7 +6,7 @@
 body {
     margin: 0;
     min-height: 100vh;
-    background: #1a1a1a;
+    background: #1a120b;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -23,7 +23,7 @@ body {
     background: #000;
 }
 
-/* 背景层 - 覆盖整个游戏区 */
+/* 背景层 */
 .bg-layer {
     position: absolute;
     top: 0;
@@ -32,83 +32,84 @@ body {
     height: 100%;
     background-size: cover;
     background-position: center;
-    filter: brightness(0.7);
+    filter: brightness(0.75);
     transition: background-image 0.3s ease;
     z-index: 0;
 }
 
-/* 立绘层 - 底部居中偏左，不遮挡对话框 */
+/* 立绘层 - 位于对话框上方，底部留出对话框空间 */
 .sprite-layer {
     position: absolute;
-    bottom: 0;
+    bottom: 200px;   /* 让出底部对话框区域 */
     left: 5%;
-    width: 30%;
+    width: 28%;
     max-width: 280px;
-    z-index: 1;
+    z-index: 2;
     pointer-events: none;
     transition: opacity 0.2s;
 }
 .sprite-layer img {
     width: 100%;
     height: auto;
-    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.5));
+    filter: drop-shadow(0 8px 20px rgba(0,0,0,0.6));
+    border-radius: 16px 16px 0 0;
 }
 
-/* 顶部数值面板 - 半透明条，右上角 */
+/* 顶部数值面板 - 半透明，简约 */
 .stats-panel {
     position: absolute;
     top: 16px;
     right: 16px;
     z-index: 3;
-    background: rgba(0, 0, 0, 0.65);
+    background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(8px);
     border-radius: 40px;
     padding: 8px 16px;
     display: flex;
     flex-wrap: wrap;
     gap: 12px;
-    color: #ffefcf;
+    color: #f3e1be;
     font-size: 13px;
     font-weight: bold;
     border: 1px solid rgba(210, 180, 140, 0.4);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
     pointer-events: none;
 }
 .stat {
     display: inline-flex;
     align-items: center;
     gap: 6px;
-    background: rgba(30, 20, 15, 0.7);
+    background: rgba(30, 20, 15, 0.6);
     padding: 4px 10px;
     border-radius: 30px;
 }
 .stat-value {
-    color: #ffcc66;
+    color: #ffcc88;
     font-family: monospace;
     font-size: 1.2rem;
     min-width: 40px;
     text-align: center;
 }
 
-/* 底部对话框 - 固定高度，半透明黑底 */
+/* 底部对话框 - 所有内容都在内部 */
 .dialog-area {
     position: absolute;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
-    background: rgba(0, 0, 0, 0.82);
-    backdrop-filter: blur(10px);
-    border-radius: 24px;
+    bottom: 16px;
+    left: 16px;
+    right: 16px;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
+    border-radius: 32px;
     padding: 16px 24px;
-    z-index: 2;
-    border: 1px solid rgba(210, 180, 140, 0.5);
-    box-shadow: 0 -4px 20px rgba(0,0,0,0.3);
+    z-index: 10;   /* 确保在最前 */
+    border: 1px solid rgba(210, 180, 140, 0.6);
+    box-shadow: 0 -4px 25px rgba(0,0,0,0.5);
     cursor: pointer;
-    transition: transform 0.1s ease;
+    transition: transform 0.1s;
 }
 .dialog-area:active {
     transform: scale(0.99);
 }
+
 .dialog-name {
     font-size: 18px;
     font-weight: bold;
@@ -126,11 +127,39 @@ body {
     min-height: 70px;
     word-break: break-word;
 }
+
+/* 选项容器 - 内部水平滚动或换行 */
+.options-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    margin: 12px 0 8px;
+    justify-content: center;
+}
+.options-container button {
+    background: rgba(30, 20, 15, 0.9);
+    border: 1px solid #c8aa77;
+    padding: 8px 20px;
+    border-radius: 40px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #ffefcf;
+    cursor: pointer;
+    transition: 0.2s;
+    font-family: inherit;
+    backdrop-filter: blur(4px);
+}
+.options-container button:hover {
+    background: #6b4c2c;
+    border-color: #e4bc7c;
+    transform: translateY(-2px);
+}
+
 .next-indicator {
     text-align: center;
-    font-size: 14px;
-    color: #d4b47c;
-    margin-top: 8px;
+    font-size: 13px;
+    color: #c8aa77;
+    margin-top: 6px;
     opacity: 0.7;
     animation: pulse 1.2s infinite;
 }
@@ -140,53 +169,16 @@ body {
     100% { opacity: 0.4; }
 }
 
-/* 选项区域 - 出现在对话框上方 */
-.options-area {
-    position: absolute;
-    bottom: 180px; /* 对话框高度+间距 */
-    left: 20px;
-    right: 20px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 12px;
-    justify-content: center;
-    z-index: 3;
-    background: transparent;
-    padding: 8px;
-}
-.options-area button {
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(8px);
-    border: 1px solid #dbbc87;
-    padding: 12px 20px;
-    border-radius: 48px;
-    font-size: 16px;
-    font-weight: 600;
-    color: #ffefcf;
-    cursor: pointer;
-    transition: 0.2s;
-    font-family: inherit;
-    flex: 0 1 auto;
-    min-width: 160px;
-    text-shadow: 0 1px 1px black;
-}
-.options-area button:hover {
-    background: #6b4c2c;
-    border-color: #ffdd99;
-    transform: translateY(-2px);
-}
-
-/* 隐藏元素 */
+/* 隐藏类 */
 .hide {
     display: none;
 }
 
-/* 响应式：小屏幕下字体缩小，立绘宽度减小 */
+/* 响应式调整 */
 @media (max-width: 600px) {
     .dialog-text { font-size: 15px; }
     .dialog-name { font-size: 15px; }
-    .sprite-layer { width: 40%; left: 0; }
+    .sprite-layer { width: 40%; left: 0; bottom: 180px; }
     .stats-panel { font-size: 11px; padding: 4px 12px; gap: 6px; }
-    .options-area button { font-size: 13px; padding: 8px 16px; min-width: 120px; }
-    .options-area { bottom: 160px; }
+    .options-container button { font-size: 12px; padding: 6px 14px; }
 }

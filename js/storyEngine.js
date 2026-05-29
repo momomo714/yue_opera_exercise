@@ -6,15 +6,33 @@ export const storyEngine = {
     startPrologue() {
         setBackground('backstage');
         setCharacter(null, false);
-        addToStory("【序幕：坠落与苏醒】<br>你在微缩胶卷阅读器前翻阅1942年《越剧日报》，一行刺眼标题：「越剧危机深重，名角袁雪芬改革受阻」。指尖刺痛，白光炸裂……", "");
-        addToStory("睁开眼，霉味、旧木头与胭脂香。半透明界面弹出古风边框：", "系统");
-        addToStory("> 【文脉守护系统 已激活】<br>> 宿主：戏曲研究者<br>> 当前时空：1942年·上海·永兴戏班后场<br>> 主线任务：阻止永兴戏班倒闭，确保新越剧改革成功。<br>> 倒计时：7天 0小时<br>> 奖励：返回现代+永久记忆<br>> 当前能量：100/100", "系统提示");
-        addToStory("班主掀帘而入，上下打量：「你会写新戏？留下，包吃住没工钱。三天写不出滚蛋！」", "周班主");
         
-        // 等待所有消息显示完毕后，弹出接受选项
+        // 详细的开头，分多段叙述
+        addToStory("【序幕：时空错位】", "");
+        addToStory("公元2024年，你是一名越剧研究者，正在上海图书馆查阅1942年的《越剧日报》微缩胶卷。", "");
+        addToStory("泛黄的报纸上，一行刺眼标题映入眼帘：「越剧危机深重，名角袁雪芬改革受阻，戏班濒临解散」。", "");
+        addToStory("你叹息一声，指尖轻触屏幕，突然一股电流从胶卷阅读器传来——", "");
+        addToStory("白光炸裂，耳边是嘈杂的锣鼓声和倒彩声……", "");
+        addToStory("你猛地睁开眼，霉味、旧木头与劣质胭脂香扑鼻而来。", "");
+        addToStory("破旧的戏箱、斑驳的柱子上贴着「永兴戏班」的红纸。", "");
+        addToStory("一个半透明的古风界面浮现在眼前：", "系统");
+        addToStory("「文脉守护系统 已激活」", "系统");
+        addToStory("「宿主：戏曲研究者」", "系统");
+        addToStory("「当前时空：1942年·上海·永兴戏班后场」", "系统");
+        addToStory("「主线任务：阻止永兴戏班倒闭，确保越剧改革成功」", "系统");
+        addToStory("「倒计时：7天」", "系统");
+        addToStory("「奖励：返回现代并获得完整历史记忆」", "系统");
+        addToStory("你站起身，发现身上穿着粗布长衫，口袋里有一枚「文脉能量符」。", "");
+        addToStory("帘子一掀，一个精瘦的中年男人走进来，上下打量你：", "周班主");
+        addToStory("「你是新来的写戏先生？会写新戏吗？」", "周班主");
+        addToStory("「留下，包吃住没工钱。三天写不出新戏，滚蛋！」", "周班主");
+        addToStory("你正要解释，系统弹出提示：", "系统");
+        addToStory("「接受使命，成为戏班编剧，七日内推动《祥林嫂》新戏上演。」", "系统");
+        
         setSceneEndCallback(() => {
             setOptions([{ label: "📜 接受使命，开始七日守护", action: () => {
-                addToStory("你默念「接受」，系统图标缩为印章。第一幕开启。", "文脉");
+                addToStory("你深吸一口气，抱拳：「定不辱命。」", "主角");
+                addToStory("系统图标缩为印章烙在手心，第一幕开启。", "文脉");
                 gameState.update({ actPhase: "act1" });
                 updateStatsDisplay();
                 this.showAct1Menu();
@@ -36,7 +54,6 @@ export const storyEngine = {
                 this.triggerEndOfAct1();
             }}
         ];
-        // 菜单选项直接显示，无需等待
         setOptions(btns);
     },
 
@@ -44,7 +61,12 @@ export const storyEngine = {
         sceneFn();
     },
 
-    triggerEndOfAct1() {
+    // 以下部分与之前相同，保持原有辩论、结局等逻辑不变...
+    // 为了节省篇幅，这里省略（但实际应保留从 triggerEndOfAct1 到 evaluateEnding 的完整内容）
+    // 注意：需要将这部分复制过来，确保完整性。
+    // 由于之前已经给出过完整 storyEngine，只需替换 startPrologue 和 showAct1Menu，其余函数不变。
+    // 请在实际文件中保留原有的 triggerEndOfAct1, startDebate, debateRound1~3, finishDebate, startNightChoice, afterNightChoice, evaluateEnding 等。
+triggerEndOfAct1() {
         if (gameState.state.actPhase !== "act1") return;
         gameState.update({ actPhase: "debate", daysLeft: 4 });
         updateStatsDisplay();
@@ -216,4 +238,5 @@ export const storyEngine = {
             }}]);
         });
     }
+
 };
