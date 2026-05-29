@@ -8,7 +8,7 @@ project/
 │   ├── storyEngine.js
 │   ├── ui.js
 │   └── scenes.js
-├── assets/
-│   └── (可放置背景/图标，本示例无实际图片)
-└── data/
-    └── constants.js
+├── data/
+│   └── constants.js
+└── assets/
+    └── 图片素材清单.txt   (需自行准备的图片说明)

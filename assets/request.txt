@@ -1,0 +1,23 @@
+=== 越剧文脉守护者 图片素材清单 ===
+请将以下图片放入对应文件夹：
+
+【背景图】 assets/bg/
+- backstage.jpg      (后台/杂物间，陈旧木箱)
+- rehearsal.jpg      (排练厅，破旧但有阳光)
+- qinroom.jpg        (琴师房，胡琴与木椅)
+- night.jpg          (深夜书桌，油灯)
+- street.jpg         (旧上海街巷)
+- stage.jpg          (戏台，幕布)
+
+【人物立绘】 assets/char/  (透明背景PNG，半身或全身)
+- yuan_xuefen.png     (袁雪芬，穿旧戏服或旗袍)
+- zhou_banzhu.png     (周班主，蓝布长衫)
+- old_qinshi.png      (老琴师，佝偻背拿胡琴)
+- xiaochun.png        (小春，八九岁男孩，粗布衣)
+- protagonist.png     (主角背影/虚影，可选)
+
+建议尺寸：
+背景：1920x1080 以上
+立绘：800x1000 左右，底部对齐
+
+若暂无图片，游戏会显示无图但不影响运行。

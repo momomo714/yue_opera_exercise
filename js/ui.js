@@ -1,15 +1,14 @@
-import { gameState } from './gameState.js';
+import { getGameState, setStateListener } from './gameState.js';
 import { storyEngine } from './storyEngine.js';
 
-let bgLayer, charSprite;
-let statsPanel;
+// DOM 元素
+let bgLayer, charSprite, statsPanel;
 let dialogNameEl, dialogTextEl, dialogArea;
-let optionsContainer;
-let nextIndicator;
+let optionsContainer, nextIndicator;
 
-let dialogueQueue = [];
+let dialogueQueue = [];      // 对话队列
 let isWaitingForOption = false;
-let currentSceneCallback = null;
+let currentSceneCallback = null;  // 对话队列清空后回调
 
 export function initUI() {
     bgLayer = document.getElementById('bgLayer');
@@ -21,9 +20,8 @@ export function initUI() {
     optionsContainer = document.getElementById('optionsContainer');
     nextIndicator = document.getElementById('nextIndicator');
     
-    // 点击对话框区域推进（但要注意如果点击的是按钮，不触发）
+    // 点击对话框推进对话
     dialogArea.addEventListener('click', (e) => {
-        // 如果点击的目标是按钮，忽略
         if (e.target.tagName === 'BUTTON') return;
         if (!isWaitingForOption && dialogueQueue.length > 0) {
             displayNextDialogue();
@@ -34,6 +32,8 @@ export function initUI() {
         }
     });
     
+    // 注册状态更新回调
+    setStateListener(() => updateStatsDisplay());
     updateStatsDisplay();
     hideOptionsContainer();
 }
@@ -51,15 +51,20 @@ function displayNextDialogue() {
     const msg = dialogueQueue.shift();
     dialogNameEl.innerText = msg.speaker ? `🎭 ${msg.speaker}` : '';
     dialogTextEl.innerHTML = msg.html;
+    // 若有立绘设置
+    if (msg.sprite) setCharacter(msg.sprite);
+    if (msg.bg) setBackground(msg.bg);
 }
 
-export function addToStory(html, speaker = "") {
-    dialogueQueue.push({ html, speaker });
+// 添加一句对话
+export function addToStory(html, speaker = "", sprite = null, bg = null) {
+    dialogueQueue.push({ html, speaker, sprite, bg });
     if (dialogueQueue.length === 1 && !isWaitingForOption) {
         displayNextDialogue();
     }
 }
 
+// 批量添加对话
 export function addMultipleMessages(messages) {
     messages.forEach(m => dialogueQueue.push(m));
     if (!isWaitingForOption && dialogueQueue.length > 0) {
@@ -67,6 +72,7 @@ export function addMultipleMessages(messages) {
     }
 }
 
+// 清空消息队列 (切换场景前谨慎使用)
 export function clearMessageQueue() {
     dialogueQueue = [];
 }
@@ -80,6 +86,7 @@ function showOptionsContainer() {
     optionsContainer.classList.remove('hide');
 }
 
+// 显示选项按钮
 export function setOptions(buttons) {
     isWaitingForOption = true;
     showOptionsContainer();
@@ -92,6 +99,7 @@ export function setOptions(buttons) {
             hideOptionsContainer();
             isWaitingForOption = false;
             if (btn.action) btn.action();
+            // 选项后若还有对话则继续
             if (dialogueQueue.length > 0) {
                 displayNextDialogue();
             } else if (currentSceneCallback) {
@@ -109,48 +117,39 @@ export function hideOptions() {
     isWaitingForOption = false;
 }
 
+// 设置场景结束回调 (对话队列处理完后调用)
 export function setSceneEndCallback(callback) {
     currentSceneCallback = callback;
 }
 
+// 切换背景
 export function setBackground(bgName) {
     if (!bgLayer) return;
-    bgLayer.style.backgroundImage = `url('images/bg/${bgName}.jpg')`;
+    bgLayer.style.backgroundImage = `url('assets/bg/${bgName}.jpg')`;
     bgLayer.style.backgroundSize = 'cover';
     bgLayer.style.backgroundPosition = 'center';
 }
 
+// 切换立绘
 export function setCharacter(charName, visible = true) {
     if (!charSprite) return;
     if (visible && charName) {
-        charSprite.src = `images/char/${charName}.png`;
+        charSprite.src = `assets/char/${charName}.png`;
         charSprite.style.display = 'block';
     } else {
         charSprite.style.display = 'none';
     }
 }
 
+// 更新数值面板
 export function updateStatsDisplay() {
-    const s = gameState.state;
+    const s = getGameState();
     statsPanel.innerHTML = `
-        <div class="stat">⚡ ${s.energy}</div>
-        <div class="stat">⏳ ${s.daysLeft}天</div>
-        <div class="stat">🎭 ${s.reformConfidence}</div>
-        <div class="stat">🤝 ${s.totalBond}</div>
-        <div class="stat">📖 ${s.actionPoints}</div>
+        <div class="stat">⚡ 灵力 ${s.energy}</div>
+        <div class="stat">📅 剩余 ${s.daysLeft}天</div>
+        <div class="stat">⭐ 信心 ${s.reformFaith}</div>
+        <div class="stat">🎻 琴师 ${s.qinshiProgress}</div>
+        <div class="stat">🌱 小春 ${s.xiaochunProgress}</div>
+        <div class="stat">💞 羁绊 ${s.bond}</div>
     `;
-}
-
-export function reduceActionAndReturnToAct1() {
-    const s = gameState.state;
-    if (s.actPhase !== "act1") return;
-    if (s.actionPoints <= 0) return;
-    s.actionPoints--;
-    updateStatsDisplay();
-    if (s.actionPoints === 0) {
-        addToStory("行动力耗尽，时光飞逝……", "系统");
-        storyEngine.triggerEndOfAct1();
-    } else {
-        storyEngine.showAct1Menu();
-    }
 }
