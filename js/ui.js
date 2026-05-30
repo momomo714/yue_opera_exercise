@@ -1,6 +1,10 @@
-import { getGameState, subscribeStateChange } from './gameState.js';
+import { getGameState, setStateListener } from './gameState.js';
+import { storyEngine } from './storyEngine.js';
 
-let bgLayer, charSprite, statsPanel, dialogNameEl, dialogTextEl, dialogArea, optionsContainer, nextIndicator;
+let bgLayer, charSprite, statsPanel;
+let dialogNameEl, dialogTextEl, dialogArea;
+let optionsContainer, nextIndicator;
+
 let dialogueQueue = [];
 let isWaitingForOption = false;
 let currentSceneCallback = null;
@@ -17,17 +21,18 @@ export function initUI() {
 
     dialogArea.addEventListener('click', (e) => {
         if (e.target.tagName === 'BUTTON') return;
-        if (!isWaitingForOption && dialogueQueue.length > 0) displayNextDialogue();
-        else if (!isWaitingForOption && dialogueQueue.length === 0 && currentSceneCallback) {
+        if (!isWaitingForOption && dialogueQueue.length > 0) {
+            displayNextDialogue();
+        } else if (!isWaitingForOption && dialogueQueue.length === 0 && currentSceneCallback) {
             const cb = currentSceneCallback;
             currentSceneCallback = null;
             cb();
         }
     });
 
-    subscribeStateChange(() => updateStatsDisplay());
+    setStateListener(() => updateStatsDisplay());
     updateStatsDisplay();
-    hideOptions();
+    hideOptionsContainer();
 }
 
 function displayNextDialogue() {
@@ -41,38 +46,54 @@ function displayNextDialogue() {
         return;
     }
     const msg = dialogueQueue.shift();
-    dialogNameEl.innerText = msg.speaker ? `🎭 ${msg.speaker}` : '';
+    dialogNameEl.innerText = msg.speaker || '';
     dialogTextEl.innerHTML = msg.html;
-    if (msg.bg) setBackground(msg.bg);
     if (msg.sprite) setCharacter(msg.sprite);
+    if (msg.bg) setBackground(msg.bg);
 }
 
 export function addToStory(html, speaker = "", sprite = null, bg = null) {
     dialogueQueue.push({ html, speaker, sprite, bg });
-    if (dialogueQueue.length === 1 && !isWaitingForOption) displayNextDialogue();
+    if (dialogueQueue.length === 1 && !isWaitingForOption) {
+        displayNextDialogue();
+    }
 }
 
-export function clearMessageQueue() { dialogueQueue = []; }
+export function addMultipleMessages(messages) {
+    messages.forEach(m => dialogueQueue.push(m));
+    if (!isWaitingForOption && dialogueQueue.length > 0) {
+        displayNextDialogue();
+    }
+}
 
-function hideOptions() {
+export function clearMessageQueue() {
+    dialogueQueue = [];
+}
+
+function hideOptionsContainer() {
     optionsContainer.innerHTML = '';
     optionsContainer.classList.add('hide');
-    isWaitingForOption = false;
+}
+
+function showOptionsContainer() {
+    optionsContainer.classList.remove('hide');
 }
 
 export function setOptions(buttons) {
     isWaitingForOption = true;
-    optionsContainer.classList.remove('hide');
+    showOptionsContainer();
     optionsContainer.innerHTML = '';
     buttons.forEach(btn => {
         const btnEl = document.createElement('button');
         btnEl.innerText = btn.label;
         btnEl.onclick = (e) => {
             e.stopPropagation();
-            hideOptions();
+            hideOptionsContainer();
+            isWaitingForOption = false;
             if (btn.action) btn.action();
-            if (dialogueQueue.length > 0) displayNextDialogue();
-            else if (currentSceneCallback) {
+            if (dialogueQueue.length > 0) {
+                displayNextDialogue();
+            } else if (currentSceneCallback) {
                 const cb = currentSceneCallback;
                 currentSceneCallback = null;
                 cb();
@@ -82,33 +103,33 @@ export function setOptions(buttons) {
     });
 }
 
-export function setSceneEndCallback(cb) { currentSceneCallback = cb; }
+export function hideOptions() {
+    hideOptionsContainer();
+    isWaitingForOption = false;
+}
+
+export function setSceneEndCallback(callback) {
+    currentSceneCallback = callback;
+}
 
 export function setBackground(bgName) {
     if (!bgLayer) return;
-    const styleMap = {
-        backstage: 'linear-gradient(145deg, #2c2418, #1e1710)',
-        rehearsal: 'linear-gradient(120deg, #3e2e20, #1e1710)',
-        qinroom: 'linear-gradient(0deg, #2b211b, #1f1712)',
-        night: 'linear-gradient(180deg, #0f0c09, #1a130c)',
-        stage: 'linear-gradient(135deg, #4a3525, #201810)'
-    };
-    bgLayer.style.background = styleMap[bgName] || '#2a2418';
+    bgLayer.style.backgroundImage = `url('assets/bg/${bgName}.jpg')`;
     bgLayer.style.backgroundSize = 'cover';
+    bgLayer.style.backgroundPosition = 'center';
 }
 
 export function setCharacter(charName, visible = true) {
     if (!charSprite) return;
     if (visible && charName) {
+        charSprite.src = `assets/char/${charName}.png`;
         charSprite.style.display = 'block';
-        charSprite.alt = charName;
-        // 可扩展真实图片路径: charSprite.src = `assets/char/${charName}.png`;
     } else {
         charSprite.style.display = 'none';
     }
 }
 
-function updateStatsDisplay() {
+export function updateStatsDisplay() {
     const s = getGameState();
     statsPanel.innerHTML = `
         <div class="stat">灵力 ${s.energy}</div>

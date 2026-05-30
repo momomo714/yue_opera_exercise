@@ -1,4 +1,4 @@
-import { scenes } from './scenes.js';
+import { scenesMap } from './scenes.js';
 
 let currentSceneId = null;
 
@@ -7,12 +7,14 @@ export const storyEngine = {
         this.gotoScene('day1_start');
     },
     gotoScene(sceneId) {
-        if (!scenes[sceneId]) {
+        if (!scenesMap[sceneId]) {
             console.error(`场景不存在: ${sceneId}`);
             return;
         }
         currentSceneId = sceneId;
-        scenes[sceneId]();
+        scenesMap[sceneId]();
     },
-    getCurrentScene() { return currentSceneId; }
+    getCurrentScene() {
+        return currentSceneId;
+    }
 };

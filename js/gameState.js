@@ -1,9 +1,17 @@
 import { INIT_STATE } from '../data/constants.js';
+import { updateStatsDisplay } from './ui.js';
 
 let gameState = { ...INIT_STATE };
-let listeners = [];
+let stateListener = null;
 
-export function getGameState() { return gameState; }
+export function initGameState() {
+    Object.assign(gameState, INIT_STATE);
+    if (stateListener) stateListener();
+}
+
+export function getGameState() {
+    return gameState;
+}
 
 export function modifyState(delta) {
     if (delta.energy !== undefined) gameState.energy = Math.min(200, Math.max(0, gameState.energy + delta.energy));
@@ -16,18 +24,20 @@ export function modifyState(delta) {
     if (delta.vocalCured !== undefined) gameState.vocalCured = delta.vocalCured;
     if (delta.daysLeft !== undefined) gameState.daysLeft = delta.daysLeft;
     if (delta.day !== undefined) gameState.day = delta.day;
-    listeners.forEach(fn => fn());
+    if (stateListener) stateListener();
 }
 
 export function advanceDay() {
     if (gameState.day < 7) {
         gameState.day++;
         gameState.daysLeft = 7 - gameState.day;
-        listeners.forEach(fn => fn());
+        if (stateListener) stateListener();
     }
 }
 
-export function subscribeStateChange(fn) { listeners.push(fn); }
+export function setStateListener(callback) {
+    stateListener = callback;
+}
 
 export function calculateEnding() {
     const { reformFaith, energy, xiaochunProgress, qinshiProgress } = gameState;

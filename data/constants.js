@@ -9,6 +9,7 @@ export const INIT_STATE = {
     hasXianglinInspire: false,
     usedMedicineForQin: false,
     vocalCured: false,
+    ending: null,
 };
 
 export const BG_MAP = {
@@ -16,6 +17,7 @@ export const BG_MAP = {
     rehearsal: 'rehearsal',
     qinRoom: 'qinroom',
     night: 'night',
+    street: 'street',
     stage: 'stage',
 };
 
@@ -24,4 +26,5 @@ export const CHAR_MAP = {
     zhou_banzhu: 'zhou_banzhu',
     old_qinshi: 'old_qinshi',
     xiaochun: 'xiaochun',
+    protagonist: 'protagonist',
 };
