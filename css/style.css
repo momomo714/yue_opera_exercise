@@ -185,7 +185,8 @@ body {
 @media (max-width: 600px) {
     .dialog-text { font-size: 15px; }
     .dialog-name { font-size: 15px; }
-    .sprite-layer { width: 40%; left: 0; bottom: 180px; }
+    .sprite-left, .sprite-right { width: 40%; left: 0; bottom: 180px; }
+    .sprite-right { left: auto; right: 0; }
     .stats-panel { font-size: 10px; padding: 4px 12px; gap: 6px; }
     .options-container button { font-size: 12px; padding: 6px 14px; }
 }

@@ -1,7 +1,7 @@
 import { getGameState, setStateListener } from './gameState.js';
 import { storyEngine } from './storyEngine.js';
 
-let bgLayer, charSprite, statsPanel;
+let bgLayer, charSpriteLeft, charSpriteRight, statsPanel;
 let dialogNameEl, dialogTextEl, dialogArea;
 let optionsContainer, nextIndicator;
 
@@ -11,7 +11,10 @@ let currentSceneCallback = null;
 
 export function initUI() {
     bgLayer = document.getElementById('bgLayer');
-    charSprite = document.getElementById('charSprite');
+    charSpriteLeft = document.getElementById('charSpriteLeft');
+    charSpriteRight = document.getElementById('charSpriteRight');
+// 主角立绘默认显示
+    if (charSpriteLeft) charSpriteLeft.style.display = 'block';
     statsPanel = document.getElementById('statsPanel');
     dialogNameEl = document.getElementById('dialogName');
     dialogTextEl = document.getElementById('dialogText');
@@ -120,12 +123,18 @@ export function setBackground(bgName) {
 }
 
 export function setCharacter(charName, visible = true) {
-    if (!charSprite) return;
+    if (!charSpriteRight) return;
     if (visible && charName) {
-        charSprite.src = `assets/char/${charName}.png`;
-        charSprite.style.display = 'block';
+        charSpriteRight.src = `assets/char/${charName}.png`;
+        charSpriteRight.style.display = 'block';
     } else {
-        charSprite.style.display = 'none';
+        charSpriteRight.style.display = 'none';
+    }
+}
+
+export function setProtagonistVisible(visible) {
+    if (charSpriteLeft) {
+        charSpriteLeft.style.display = visible ? 'block' : 'none';
     }
 }
 
