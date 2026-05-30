@@ -36,22 +36,35 @@ body {
     z-index: 0;
 }
 
-.sprite-layer {
+/* 左右双立绘容器 */
+.sprite-left {
     position: absolute;
     bottom: 200px;
     left: 5%;
-    width: 28%;
-    max-width: 280px;
+    width: 25%;
+    max-width: 250px;
     z-index: 2;
     pointer-events: none;
     transition: opacity 0.2s;
 }
-.sprite-layer img {
+.sprite-right {
+    position: absolute;
+    bottom: 200px;
+    right: 5%;
+    width: 25%;
+    max-width: 250px;
+    z-index: 2;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+.sprite-left img, .sprite-right img {
     width: 100%;
     height: auto;
     filter: drop-shadow(0 8px 20px rgba(0,0,0,0.6));
     border-radius: 16px 16px 0 0;
+    background: rgba(0,0,0,0.3);
 }
+/* 主角立绘固定在左，对话角色在右，默认透明度可分别控制 */
 
 .stats-panel {
     position: absolute;
