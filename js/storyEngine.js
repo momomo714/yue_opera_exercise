@@ -1,6 +1,4 @@
-import { scenesMap } from './scenes.js';
-import { clearMessageQueue, setSceneEndCallback } from './ui.js';
-import { getGameState } from './gameState.js';
+import { scenes } from './scenes.js';
 
 let currentSceneId = null;
 
@@ -8,18 +6,13 @@ export const storyEngine = {
     startGame() {
         this.gotoScene('day1_start');
     },
-    
     gotoScene(sceneId) {
-        if (!scenesMap[sceneId]) {
+        if (!scenes[sceneId]) {
             console.error(`场景不存在: ${sceneId}`);
             return;
         }
         currentSceneId = sceneId;
-        // 执行场景函数
-        scenesMap[sceneId]();
+        scenes[sceneId]();
     },
-    
-    getCurrentScene() {
-        return currentSceneId;
-    }
+    getCurrentScene() { return currentSceneId; }
 };

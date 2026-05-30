@@ -1,22 +1,10 @@
 import { INIT_STATE } from '../data/constants.js';
-import { updateStatsDisplay } from './ui.js';
 
 let gameState = { ...INIT_STATE };
+let listeners = [];
 
-// 监听器 (用于UI刷新)
-let stateListener = null;
+export function getGameState() { return gameState; }
 
-export function initGameState() {
-    // 重置状态 (若需要)
-    Object.assign(gameState, INIT_STATE);
-    if (stateListener) stateListener();
-}
-
-export function getGameState() {
-    return gameState;
-}
-
-// 通用修改数值方法, 并触发UI更新
 export function modifyState(delta) {
     if (delta.energy !== undefined) gameState.energy = Math.min(200, Math.max(0, gameState.energy + delta.energy));
     if (delta.reformFaith !== undefined) gameState.reformFaith = Math.min(100, Math.max(0, gameState.reformFaith + delta.reformFaith));
@@ -28,25 +16,19 @@ export function modifyState(delta) {
     if (delta.vocalCured !== undefined) gameState.vocalCured = delta.vocalCured;
     if (delta.daysLeft !== undefined) gameState.daysLeft = delta.daysLeft;
     if (delta.day !== undefined) gameState.day = delta.day;
-    
-    if (stateListener) stateListener();
+    listeners.forEach(fn => fn());
 }
 
-// 推进一天 (剧情调用)
 export function advanceDay() {
     if (gameState.day < 7) {
         gameState.day++;
         gameState.daysLeft = 7 - gameState.day;
-        if (stateListener) stateListener();
+        listeners.forEach(fn => fn());
     }
 }
 
-// 注册UI更新回调
-export function setStateListener(callback) {
-    stateListener = callback;
-}
+export function subscribeStateChange(fn) { listeners.push(fn); }
 
-// 结局计算
 export function calculateEnding() {
     const { reformFaith, energy, xiaochunProgress, qinshiProgress } = gameState;
     if (reformFaith >= 80 && energy >= 30 && xiaochunProgress >= 100 && qinshiProgress >= 100) return "perfect";
