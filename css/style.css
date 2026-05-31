@@ -39,19 +39,19 @@ body {
 /* 左右双立绘容器 - 底部对齐屏幕，适中大小 */
 .sprite-left {
     position: absolute;
-    bottom: 100px;
+    bottom: 50px;
     left: 2%;
-    width: 28%;
-    max-width: 300px;
+    width: 22%;
+    max-width: 250px;
     z-index: 2;
     pointer-events: none;
 }
 .sprite-right {
     position: absolute;
-    bottom: 100px;
+    bottom: 50px;
     right: 2%;
-    width: 28%;
-    max-width: 300px;
+    width: 22%;
+    max-width: 250px;
     z-index: 2;
     pointer-events: none;
 }
@@ -70,15 +70,15 @@ body {
 /* 响应式调整 */
 @media (max-width: 600px) {
     .sprite-left, .sprite-right {
-        width: 40%;
+        width: 20%;
         max-width: 240px;
         bottom: 100px;
     }
 }
 @media (min-width: 1400px) {
     .sprite-left, .sprite-right {
-        width: 25%;
-        max-width: 350px;
+        width: 20%;
+        max-width: 300px;
         bottom: 100px;
     }
 }
