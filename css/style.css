@@ -39,19 +39,19 @@ body {
 /* 左右双立绘容器 - 底部对齐屏幕，适中大小 */
 .sprite-left {
     position: absolute;
-    bottom: 50px;
+    bottom: 0px;
     left: 2%;
-    width: 22%;
-    max-width: 250px;
+    width: 15%;
+    max-width: 200px;
     z-index: 2;
     pointer-events: none;
 }
 .sprite-right {
     position: absolute;
-    bottom: 50px;
+    bottom: 0px;
     right: 2%;
-    width: 22%;
-    max-width: 250px;
+    width: 15%;
+    max-width: 200px;
     z-index: 2;
     pointer-events: none;
 }
