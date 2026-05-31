@@ -20,9 +20,7 @@ export function initUI() {
     optionsContainer = document.getElementById('optionsContainer');
     nextIndicator = document.getElementById('nextIndicator');
 
-    // 主角立绘默认显示（左侧）
     if (charSpriteLeft) charSpriteLeft.style.display = 'block';
-    // 右侧立绘初始隐藏
     if (charSpriteRight) charSpriteRight.style.display = 'none';
 
     dialogArea.addEventListener('click', (e) => {
@@ -30,6 +28,7 @@ export function initUI() {
         if (!isWaitingForOption && dialogueQueue.length > 0) {
             displayNextDialogue();
         } else if (!isWaitingForOption && dialogueQueue.length === 0 && currentSceneCallback) {
+            console.log("队列空，触发场景回调");
             const cb = currentSceneCallback;
             currentSceneCallback = null;
             cb();
@@ -44,35 +43,39 @@ export function initUI() {
 function displayNextDialogue() {
     if (isWaitingForOption) return;
     if (dialogueQueue.length === 0) {
-        if (currentSceneCallback) {
-            const cb = currentSceneCallback;
-            currentSceneCallback = null;
-            cb();
-        }
+        console.warn("displayNextDialogue 但队列为空");
         return;
     }
-    const msg = dialogueQueue.shift();
-    dialogNameEl.innerText = msg.speaker || '';
-    dialogTextEl.innerHTML = msg.html;
-    if (msg.sprite) setCharacter(msg.sprite, true);
-    if (msg.bg) setBackground(msg.bg);
+    try {
+        const msg = dialogueQueue.shift();
+        console.log(`[显示] 剩余 ${dialogueQueue.length} 条 | 内容: ${msg.html.substring(0, 40)}`);
+        dialogNameEl.innerText = msg.speaker || '';
+        dialogTextEl.innerHTML = msg.html;
+        if (msg.sprite) setCharacter(msg.sprite, true);
+        if (msg.bg) setBackground(msg.bg);
+    } catch(e) {
+        console.error("显示对话时出错", e);
+    }
 }
 
 export function addToStory(html, speaker = "", sprite = null, bg = null) {
-    dialogueQueue.push({ html, speaker, sprite, bg });
-    if (dialogueQueue.length === 1 && !isWaitingForOption) {
-        displayNextDialogue();
+    try {
+        dialogueQueue.push({ html, speaker, sprite, bg });
+        console.log(`[加入] 队列长度 ${dialogueQueue.length} | 内容: ${html.substring(0, 40)}`);
+        if (dialogueQueue.length === 1 && !isWaitingForOption) {
+            displayNextDialogue();
+        }
+    } catch(e) {
+        console.error("addToStory出错", e);
     }
 }
 
 export function addMultipleMessages(messages) {
-    messages.forEach(m => dialogueQueue.push(m));
-    if (!isWaitingForOption && dialogueQueue.length > 0) {
-        displayNextDialogue();
-    }
+    messages.forEach(m => addToStory(m.html, m.speaker, m.sprite, m.bg));
 }
 
 export function clearMessageQueue() {
+    console.log("清空队列，原长度", dialogueQueue.length);
     dialogueQueue = [];
 }
 
@@ -125,7 +128,6 @@ export function setBackground(bgName) {
     bgLayer.style.backgroundPosition = 'center';
 }
 
-// 控制右侧立绘（对话角色），主角立绘保持不变
 export function setCharacter(charName, visible = true) {
     if (!charSpriteRight) return;
     if (visible && charName) {
@@ -136,17 +138,14 @@ export function setCharacter(charName, visible = true) {
     }
 }
 
-// 可选：单独控制主角立绘显示/隐藏（默认一直显示）
 export function setProtagonistVisible(visible) {
-    if (charSpriteLeft) {
-        charSpriteLeft.style.display = visible ? 'block' : 'none';
-    }
+    if (charSpriteLeft) charSpriteLeft.style.display = visible ? 'block' : 'none';
 }
 
 export function updateStatsDisplay() {
     const s = getGameState();
     statsPanel.innerHTML = `
-        <div class="stat">灵力 ${s.energy}</div>
+        <div class="stat">能量 ${s.energy}</div>
         <div class="stat">剩余 ${s.daysLeft}天</div>
         <div class="stat">信心 ${s.reformFaith}</div>
         <div class="stat">琴师 ${s.qinshiProgress}</div>
