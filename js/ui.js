@@ -13,14 +13,17 @@ export function initUI() {
     bgLayer = document.getElementById('bgLayer');
     charSpriteLeft = document.getElementById('charSpriteLeft');
     charSpriteRight = document.getElementById('charSpriteRight');
-// 主角立绘默认显示
-    if (charSpriteLeft) charSpriteLeft.style.display = 'block';
     statsPanel = document.getElementById('statsPanel');
     dialogNameEl = document.getElementById('dialogName');
     dialogTextEl = document.getElementById('dialogText');
     dialogArea = document.getElementById('dialogArea');
     optionsContainer = document.getElementById('optionsContainer');
     nextIndicator = document.getElementById('nextIndicator');
+
+    // 主角立绘默认显示（左侧）
+    if (charSpriteLeft) charSpriteLeft.style.display = 'block';
+    // 右侧立绘初始隐藏
+    if (charSpriteRight) charSpriteRight.style.display = 'none';
 
     dialogArea.addEventListener('click', (e) => {
         if (e.target.tagName === 'BUTTON') return;
@@ -51,7 +54,7 @@ function displayNextDialogue() {
     const msg = dialogueQueue.shift();
     dialogNameEl.innerText = msg.speaker || '';
     dialogTextEl.innerHTML = msg.html;
-    if (msg.sprite) setCharacter(msg.sprite);
+    if (msg.sprite) setCharacter(msg.sprite, true);
     if (msg.bg) setBackground(msg.bg);
 }
 
@@ -122,6 +125,7 @@ export function setBackground(bgName) {
     bgLayer.style.backgroundPosition = 'center';
 }
 
+// 控制右侧立绘（对话角色），主角立绘保持不变
 export function setCharacter(charName, visible = true) {
     if (!charSpriteRight) return;
     if (visible && charName) {
@@ -132,6 +136,7 @@ export function setCharacter(charName, visible = true) {
     }
 }
 
+// 可选：单独控制主角立绘显示/隐藏（默认一直显示）
 export function setProtagonistVisible(visible) {
     if (charSpriteLeft) {
         charSpriteLeft.style.display = visible ? 'block' : 'none';
