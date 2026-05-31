@@ -41,8 +41,8 @@ export function setStateListener(callback) {
 
 export function calculateEnding() {
     const { reformFaith, energy, xiaochunProgress, qinshiProgress } = gameState;
-    if (reformFaith >= 80 && energy >= 30 && xiaochunProgress >= 100 && qinshiProgress >= 100) return "perfect";
-    if (reformFaith >= 70) return "success";
-    if (reformFaith >= 60) return "barely";
+    if (reformFaith >= 50 && energy >= 30 && xiaochunProgress >= 100 && qinshiProgress >= 100) return "perfect";
+    if (reformFaith >= 40) return "success";
+    if (reformFaith >= 30) return "barely";
     return "fail";
 }
