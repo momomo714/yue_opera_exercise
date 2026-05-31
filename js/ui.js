@@ -20,8 +20,17 @@ export function initUI() {
     optionsContainer = document.getElementById('optionsContainer');
     nextIndicator = document.getElementById('nextIndicator');
 
-    if (charSpriteLeft) charSpriteLeft.style.display = 'block';
-    if (charSpriteRight) charSpriteRight.style.display = 'none';
+    // 主角立绘样式修正：底部对齐，无黑边
+    if (charSpriteLeft) {
+        charSpriteLeft.style.display = 'block';
+        charSpriteLeft.style.verticalAlign = 'bottom';
+        charSpriteLeft.style.background = 'transparent';
+    }
+    if (charSpriteRight) {
+        charSpriteRight.style.display = 'none';
+        charSpriteRight.style.verticalAlign = 'bottom';
+        charSpriteRight.style.background = 'transparent';
+    }
 
     dialogArea.addEventListener('click', (e) => {
         if (e.target.tagName === 'BUTTON') return;
@@ -58,7 +67,6 @@ function displayNextDialogue() {
 
 export function addToStory(html, speaker = "", sprite = null, bg = null) {
     dialogueQueue.push({ html, speaker, sprite, bg });
-    // 不再自动显示，等待用户点击或 setSceneEndCallback 触发
 }
 
 export function addMultipleMessages(messages) {
@@ -109,7 +117,6 @@ export function hideOptions() {
 
 export function setSceneEndCallback(callback) {
     currentSceneCallback = callback;
-    // 如果队列中有消息且尚未处于选项等待状态，自动显示第一条
     if (dialogueQueue.length > 0 && !isWaitingForOption) {
         displayNextDialogue();
     }
@@ -122,11 +129,18 @@ export function setBackground(bgName) {
     bgLayer.style.backgroundPosition = 'center';
 }
 
+// 控制右侧立绘（对话角色），确保底部对齐和无背景
 export function setCharacter(charName, visible = true) {
     if (!charSpriteRight) return;
     if (visible && charName) {
         charSpriteRight.src = `assets/char/${charName}.png`;
         charSpriteRight.style.display = 'block';
+        charSpriteRight.style.verticalAlign = 'bottom';
+        charSpriteRight.style.background = 'transparent';
+        // 图片加载后再次确保样式
+        charSpriteRight.onload = () => {
+            charSpriteRight.style.verticalAlign = 'bottom';
+        };
     } else {
         charSpriteRight.style.display = 'none';
     }
@@ -141,7 +155,7 @@ export function setProtagonistVisible(visible) {
 export function updateStatsDisplay() {
     const s = getGameState();
     statsPanel.innerHTML = `
-        <div class="stat">灵力 ${s.energy}</div>
+        <div class="stat">能量 ${s.energy}</div>
         <div class="stat">剩余 ${s.daysLeft}天</div>
         <div class="stat">信心 ${s.reformFaith}</div>
         <div class="stat">琴师 ${s.qinshiProgress}</div>
