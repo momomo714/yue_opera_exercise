@@ -36,34 +36,51 @@ body {
     z-index: 0;
 }
 
-/* 左右双立绘容器 - 增大尺寸，底部对齐 */
+/* 左右双立绘容器 - 底部对齐屏幕，适中大小 */
 .sprite-left {
     position: absolute;
-    bottom: 150px;
+    bottom: 100px;
     left: 2%;
-    width: 30%;
-    max-width: 330px;
+    width: 28%;
+    max-width: 300px;
     z-index: 2;
     pointer-events: none;
 }
 .sprite-right {
     position: absolute;
-    bottom: 150px;
+    bottom: 100px;
     right: 2%;
-    width: 30%;
-    max-width: 330px;
+    width: 28%;
+    max-width: 300px;
     z-index: 2;
     pointer-events: none;
 }
 .sprite-left img, .sprite-right img {
     width: 100%;
     height: auto;
-    display: block;         /* 消除图片下方空白 */
-    vertical-align: bottom; /* 底部对齐 */
+    display: block;
+    vertical-align: bottom;
     filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
-    /* 确保背景透明，无黑色块 */
     background: transparent;
     border-radius: 12px 12px 0 0;
+    /* 确保图片底部无额外边距 */
+    margin-bottom: 0;
+}
+
+/* 响应式调整 */
+@media (max-width: 600px) {
+    .sprite-left, .sprite-right {
+        width: 40%;
+        max-width: 240px;
+        bottom: 100px;
+    }
+}
+@media (min-width: 1400px) {
+    .sprite-left, .sprite-right {
+        width: 25%;
+        max-width: 350px;
+        bottom: 100px;
+    }
 }
 
 .stats-panel {
