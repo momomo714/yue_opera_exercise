@@ -115,7 +115,37 @@ scenes.day2_qinshi = () => {
     addToStory("他似乎被触动了。", "内心");
     waitAndGo('day2_xiaochun');
 };
-
+scenes.day2_xiaochun = () => {
+    clearMessageQueue();
+    setBackground('backstage');
+    addToStory("黄昏，后台角落。小春蹲在戏箱后面，肩膀一抽一抽的，躲在角落里哭泣。");
+    setCharacter('xiaochun');
+    addToStory("呜呜......", "小春");
+    addToStory("你走过去：「小春，怎么了？」");
+    addToStory("小春抬头，脸上有泪痕和泥印：「先生......他们说我笨，连‘戲’字都写不好，说我烂泥扶不上墙......」", "小春");
+    addToStory("这孩子才八九岁啊，就要承受这些。", "内心");
+    setSceneEndCallback(() => {
+        setOptions([
+            { label: "蹲下来安慰她，手把手教他写「戲」字", action: () => {
+                modifyState({ xiaochunProgress: 15, bond: 5 });
+                addToStory("来，我教你。你看，「戲」左边是「虚」，右边是「戈」......", "主角");
+                addToStory("小春跟着你一笔一划，慢慢学会了这个字，渐渐不哭了。");
+                addToStory("先生，你真好。", "小春");
+                addToStory("也许，这也是我在这里的意义之一。", "内心");
+                waitAndGo('day2_end');
+            }},
+            { label: "拍拍她的肩膀：「哭有什么用？要自己争气。」", action: () => {
+                modifyState({ xiaochunProgress: 5, bond: 2 });
+                addToStory("小春擦了擦眼泪，用力点头。");
+                waitAndGo('day2_end');
+            }},
+            { label: "默默离开，让她自己消化", action: () => {
+                addToStory("你心中有些自责，但还是转身离开。");
+                waitAndGo('day2_end');
+            }}
+        ]);
+    });
+};
 scenes.day2_end = () => {
     addToStory("深夜，油灯如豆。你坐在桌前，面前摊着纸和笔。");
     addToStory("第二天就这样结束了。我认识了他们所有人：略带疲惫的袁雪芬、有些固执的老琴师、扛着三十口人生计的班主、无助的小春。每个人都在1942年的这个戏班中挣扎求生。", "内心");
