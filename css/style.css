@@ -36,21 +36,21 @@ body {
     z-index: 0;
 }
 
-/* 左右双立绘容器 - 底部对齐屏幕，适中大小 */
+/* 左右双立绘容器 - 稍微缩小，并向下移动一点 */
 .sprite-left {
     position: absolute;
-    bottom: 0px;
+    bottom: -15px;      /* 向下移动10px，超出底部一点 */
     left: 2%;
-    width: 15%;
+    width: 12%;         /* 从15%缩小到12% */
     max-width: 200px;
     z-index: 2;
     pointer-events: none;
 }
 .sprite-right {
     position: absolute;
-    bottom: 0px;
+    bottom: -15px;      /* 同样向下移动 */
     right: 2%;
-    width: 15%;
+    width: 12%;         /* 从15%缩小到12% */
     max-width: 200px;
     z-index: 2;
     pointer-events: none;
@@ -63,23 +63,29 @@ body {
     filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
     background: transparent;
     border-radius: 12px 12px 0 0;
-    /* 确保图片底部无额外边距 */
     margin-bottom: 0;
 }
 
 /* 响应式调整 */
 @media (max-width: 600px) {
     .sprite-left, .sprite-right {
-        width: 20%;
+        width: 15%;         /* 手机端稍微调大，但仍然比原来20%小？原来手机端是20%，现在改成15% */
         max-width: 240px;
-        bottom: 100px;
+        bottom: 80px;       /* 手机端适当调整下移位置（原来100px，改为80px？实际要向下移动就减小数值？因为bottom是距离底部距离，减小会上移。为了下移，用负值或减小？保持统一用-10px或者调整。为简单，手机端也统一用-10px，但注意可能被裁剪。你也可以设置bottom: -10px，覆盖媒体查询。 */
+    }
+}
+@media (max-width: 600px) {
+    /* 覆盖保证一致性 */
+    .sprite-left, .sprite-right {
+        bottom: -10px;
+        width: 12%;
     }
 }
 @media (min-width: 1400px) {
     .sprite-left, .sprite-right {
-        width: 20%;
+        width: 10%;         /* 大屏幕缩小到10% */
         max-width: 300px;
-        bottom: 100px;
+        bottom: -10px;
     }
 }
 
@@ -203,16 +209,16 @@ body {
     .dialog-text { font-size: 15px; }
     .dialog-name { font-size: 15px; }
     .sprite-left, .sprite-right {
-        width: 45%;
-        bottom: 160px;
+        width: 12%;
+        bottom: -10px;
     }
     .stats-panel { font-size: 10px; padding: 4px 12px; gap: 6px; }
     .options-container button { font-size: 12px; padding: 6px 14px; }
 }
 @media (min-width: 1400px) {
     .sprite-left, .sprite-right {
-        width: 30%;
+        width: 10%;
         max-width: 420px;
-        bottom: 200px;
+        bottom: -10px;
     }
 }
