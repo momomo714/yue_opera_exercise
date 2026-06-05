@@ -36,22 +36,22 @@ body {
     z-index: 0;
 }
 
-/* 左右双立绘容器 - 稍微缩小，并向下移动一点 */
+/* 左右双立绘容器 - 半身像，位于对话框上方 */
 .sprite-left {
     position: absolute;
-    bottom: 20px;      /* 向下移动10px，超出底部一点 */
+    bottom: 160px;       /* 底部距离屏幕底部160px，对话框在16px处，确保立在对话框之上 */
     left: 2%;
-    width: 20%;         /* 从15%缩小到12% */
-    max-width: 200px;
+    width: 22%;          /* 稍大一点，橙光半身占比约1/4宽度 */
+    max-width: 260px;
     z-index: 2;
     pointer-events: none;
 }
 .sprite-right {
     position: absolute;
-    bottom: 20px;      /* 同样向下移动 */
+    bottom: 160px;
     right: 2%;
-    width: 20%;         /* 从15%缩小到12% */
-    max-width: 200px;
+    width: 22%;
+    max-width: 260px;
     z-index: 2;
     pointer-events: none;
 }
@@ -69,23 +69,16 @@ body {
 /* 响应式调整 */
 @media (max-width: 600px) {
     .sprite-left, .sprite-right {
-        width: 15%;         /* 手机端稍微调大，但仍然比原来20%小？原来手机端是20%，现在改成15% */
-        max-width: 240px;
-        bottom: 80px;       /* 手机端适当调整下移位置（原来100px，改为80px？实际要向下移动就减小数值？因为bottom是距离底部距离，减小会上移。为了下移，用负值或减小？保持统一用-10px或者调整。为简单，手机端也统一用-10px，但注意可能被裁剪。你也可以设置bottom: -10px，覆盖媒体查询。 */
-    }
-}
-@media (max-width: 600px) {
-    /* 覆盖保证一致性 */
-    .sprite-left, .sprite-right {
-        bottom: -10px;
-        width: 12%;
+        bottom: 100px;     /* 手机端对话框可能较高，适当降低立绘位置 */
+        width: 28%;
+        max-width: 220px;
     }
 }
 @media (min-width: 1400px) {
     .sprite-left, .sprite-right {
-        width: 10%;         /* 大屏幕缩小到10% */
-        max-width: 300px;
-        bottom: -10px;
+        width: 18%;
+        max-width: 320px;
+        bottom: 180px;
     }
 }
 
