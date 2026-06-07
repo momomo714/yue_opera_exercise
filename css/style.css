@@ -231,17 +231,34 @@ body {
     bottom: 0;
     left: 0;
     width: 100%;
-    height: 60%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    gap: 0.5rem;
     pointer-events: none;
 }
+
 .cover-char {
-    position: absolute;
-    width: 18%;
-    max-width: 180px;
+    width: 9%;            /* 更小，更精致 */
+    max-width: 90px;
     height: auto;
-    bottom: 0;
-    filter: drop-shadow(0 0 8px rgba(0,0,0,0.5));
-    opacity: 0.9;
+    filter: blur(2px) brightness(0.9);  /* 虚化 + 轻微压暗 */
+    opacity: 0.55;        /* 半透明，融入背景 */
+    transition: none;
+    object-fit: contain;
+}
+
+/* 手机屏幕适配 */
+@media (max-width: 600px) {
+    .cover-char {
+        width: 15%;
+        max-width: 70px;
+        filter: blur(1.5px);
+        opacity: 0.6;
+    }
+    .cover-characters {
+        gap: 0.2rem;
+    }
 }
 .cover-title {
     position: absolute;
