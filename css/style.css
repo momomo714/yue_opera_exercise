@@ -204,3 +204,87 @@ body {
     .stats-panel { font-size: 10px; padding: 4px 12px; gap: 6px; }
     .options-container button { font-size: 12px; padding: 6px 14px; }
 }
+/* 封面层样式 */
+.cover-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 100;
+    overflow: hidden;
+    cursor: pointer;
+    transition: opacity 0.8s ease;
+}
+.cover-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url('assets/bg/stage.jpg') center/cover no-repeat;
+    filter: blur(8px) brightness(0.6);
+    transform: scale(1.05);
+}
+.cover-characters {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 60%;
+    pointer-events: none;
+}
+.cover-char {
+    position: absolute;
+    width: 18%;
+    max-width: 180px;
+    height: auto;
+    bottom: 0;
+    filter: drop-shadow(0 0 8px rgba(0,0,0,0.5));
+    opacity: 0.9;
+}
+.cover-title {
+    position: absolute;
+    top: 25%;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    color: #fdf0d8;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    z-index: 3;
+    font-family: '华文楷书', 'Microsoft YaHei', serif;
+}
+.cover-title h1 {
+    font-size: 4rem;
+    letter-spacing: 6px;
+    margin-bottom: 0.5rem;
+}
+.cover-title p {
+    font-size: 1.5rem;
+    opacity: 0.9;
+}
+#startGameBtn {
+    margin-top: 2rem;
+    background: rgba(0,0,0,0.7);
+    border: 2px solid #e7c48b;
+    color: #ffefcf;
+    font-size: 1.3rem;
+    padding: 10px 30px;
+    border-radius: 60px;
+    cursor: pointer;
+    backdrop-filter: blur(4px);
+    transition: 0.2s;
+}
+#startGameBtn:hover {
+    background: #9b7a4b;
+    transform: scale(1.02);
+    border-color: #ffdd99;
+}
+
+/* 手机适配 */
+@media (max-width: 600px) {
+    .cover-title h1 { font-size: 2.2rem; }
+    .cover-title p { font-size: 1rem; }
+    .cover-char { width: 22%; }
+    #startGameBtn { font-size: 1rem; padding: 6px 20px; }
+}
