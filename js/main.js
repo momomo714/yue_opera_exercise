@@ -2,24 +2,22 @@ import { initUI } from './ui.js';
 import { initGameState } from './gameState.js';
 import { storyEngine } from './storyEngine.js';
 
-// 等待封面开始
-function setupCover() {
+function startGame() {
+    const gameContent = document.getElementById('gameContent');
     const cover = document.getElementById('coverLayer');
-    const startBtn = document.getElementById('startGameBtn');
-    if (!cover) return;
+    if (!gameContent || !cover) return;
 
-    startBtn.addEventListener('click', () => {
-        // 淡出效果
-        cover.style.opacity = '0';
-        setTimeout(() => {
-            cover.style.display = 'none';
-            // 正式启动游戏
-            initUI();
-            initGameState();
-            storyEngine.startGame();
-        }, 800);
-    });
+    cover.style.opacity = '0';
+    setTimeout(() => {
+        cover.style.display = 'none';
+        gameContent.style.display = 'block';
+        initUI();
+        initGameState();
+        storyEngine.startGame();
+    }, 600);
 }
 
-// 先执行封面设置，游戏暂不启动
-setupCover();
+const startBtn = document.getElementById('startGameBtn');
+if (startBtn) {
+    startBtn.addEventListener('click', startGame);
+}

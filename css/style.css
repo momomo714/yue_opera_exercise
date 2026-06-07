@@ -36,22 +36,22 @@ body {
     z-index: 0;
 }
 
-/* 左右双立绘容器 - 半身像，位于对话框上方 */
+/* 左右双立绘容器 - 适中大小，底部贴对话框 */
 .sprite-left {
     position: absolute;
-    bottom: 160px;       /* 底部距离屏幕底部160px，对话框在16px处，确保立在对话框之上 */
+    bottom: 180px;
     left: 2%;
-    width: 22%;          /* 稍大一点，橙光半身占比约1/4宽度 */
-    max-width: 260px;
+    width: 28%;
+    max-width: 300px;
     z-index: 2;
     pointer-events: none;
 }
 .sprite-right {
     position: absolute;
-    bottom: 160px;
+    bottom: 180px;
     right: 2%;
-    width: 22%;
-    max-width: 260px;
+    width: 28%;
+    max-width: 300px;
     z-index: 2;
     pointer-events: none;
 }
@@ -63,23 +63,6 @@ body {
     filter: drop-shadow(0 4px 12px rgba(0,0,0,0.3));
     background: transparent;
     border-radius: 12px 12px 0 0;
-    margin-bottom: 0;
-}
-
-/* 响应式调整 */
-@media (max-width: 600px) {
-    .sprite-left, .sprite-right {
-        bottom: 100px;     /* 手机端对话框可能较高，适当降低立绘位置 */
-        width: 28%;
-        max-width: 220px;
-    }
-}
-@media (min-width: 1400px) {
-    .sprite-left, .sprite-right {
-        width: 18%;
-        max-width: 320px;
-        bottom: 180px;
-    }
 }
 
 .stats-panel {
@@ -201,20 +184,32 @@ body {
 @media (max-width: 600px) {
     .dialog-text { font-size: 15px; }
     .dialog-name { font-size: 15px; }
+    .sprite-left, .sprite-right {
+        width: 40%;
+        bottom: 160px;
+    }
     .stats-panel { font-size: 10px; padding: 4px 12px; gap: 6px; }
     .options-container button { font-size: 12px; padding: 6px 14px; }
 }
-/* 封面层样式 */
+@media (min-width: 1400px) {
+    .sprite-left, .sprite-right {
+        width: 25%;
+        max-width: 350px;
+        bottom: 200px;
+    }
+}
+
+/* 封面样式 */
 .cover-layer {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 100;
-    overflow: hidden;
-    cursor: pointer;
-    transition: opacity 0.8s ease;
+    z-index: 200;
+    background: rgba(0,0,0,0.4);
+    cursor: default;
+    transition: opacity 0.6s ease;
 }
 .cover-bg {
     position: absolute;
@@ -223,51 +218,36 @@ body {
     width: 100%;
     height: 100%;
     background: url('assets/bg/stage.jpg') center/cover no-repeat;
-    filter: blur(8px) brightness(0.6);
+    filter: blur(8px) brightness(0.7);
     transform: scale(1.05);
 }
 .cover-characters {
     position: absolute;
-    bottom: 0;
+    bottom: 8%;
     left: 0;
     width: 100%;
     display: flex;
     justify-content: center;
     align-items: flex-end;
-    gap: 0.5rem;
+    gap: 1rem;
     pointer-events: none;
 }
-
 .cover-char {
-    width: 9%;            /* 更小，更精致 */
-    max-width: 90px;
+    width: 9%;
+    max-width: 100px;
     height: auto;
-    filter: blur(2px) brightness(0.9);  /* 虚化 + 轻微压暗 */
-    opacity: 0.55;        /* 半透明，融入背景 */
-    transition: none;
+    filter: blur(2px) brightness(0.85);
+    opacity: 0.55;
     object-fit: contain;
-}
-
-/* 手机屏幕适配 */
-@media (max-width: 600px) {
-    .cover-char {
-        width: 15%;
-        max-width: 70px;
-        filter: blur(1.5px);
-        opacity: 0.6;
-    }
-    .cover-characters {
-        gap: 0.2rem;
-    }
 }
 .cover-title {
     position: absolute;
-    top: 25%;
+    top: 28%;
     left: 0;
     width: 100%;
     text-align: center;
-    color: #fdf0d8;
-    text-shadow: 0 4px 12px rgba(0,0,0,0.6);
+    color: #fef0df;
+    text-shadow: 0 4px 12px rgba(0,0,0,0.8);
     z-index: 3;
     font-family: '华文楷书', 'Microsoft YaHei', serif;
 }
@@ -297,11 +277,9 @@ body {
     transform: scale(1.02);
     border-color: #ffdd99;
 }
-
-/* 手机适配 */
 @media (max-width: 600px) {
     .cover-title h1 { font-size: 2.2rem; }
     .cover-title p { font-size: 1rem; }
-    .cover-char { width: 22%; }
+    .cover-char { width: 15%; max-width: 70px; filter: blur(1.5px); opacity: 0.6; }
     #startGameBtn { font-size: 1rem; padding: 6px 20px; }
 }

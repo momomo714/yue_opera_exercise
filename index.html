@@ -8,15 +8,16 @@
 </head>
 <body>
 <div class="game-wrapper">
-    <!-- 封面层 -->
+
+    <!-- 封面层（初始显示） -->
     <div id="coverLayer" class="cover-layer">
-        <div class="cover-bg"></div>  <!-- 虚化背景 -->
+        <div class="cover-bg"></div>
         <div class="cover-characters">
-            <img src="assets/char/yuan_xuefen.png" alt="袁雪芬" class="cover-char" >
-            <img src="assets/char/zhou_banzhu.png" alt="周班主" class="cover-char" >
-            <img src="assets/char/old_qinshi.png" alt="老琴师" class="cover-char" >
-            <img src="assets/char/xiaochun.png" alt="小春" class="cover-char" >
-            <img src="assets/char/protagonist.png" alt="主角" class="cover-char" >
+            <img src="assets/char/yuan_xuefen.png" alt="袁雪芬" class="cover-char">
+            <img src="assets/char/zhou_banzhu.png" alt="周班主" class="cover-char">
+            <img src="assets/char/old_qinshi.png" alt="老琴师" class="cover-char">
+            <img src="assets/char/xiaochun.png" alt="小春" class="cover-char">
+            <img src="assets/char/protagonist.png" alt="主角" class="cover-char">
         </div>
         <div class="cover-title">
             <h1>越剧文脉守护者</h1>
@@ -24,20 +25,25 @@
             <button id="startGameBtn">▼ 点击开戏 ▼</button>
         </div>
     </div>
-    <div id="bgLayer" class="bg-layer"></div>
-    <div id="spriteLeft" class="sprite-left">
-        <img id="charSpriteLeft" src="assets/char/protagonist.png" alt="主角">
+
+    <!-- 游戏主内容（初始隐藏） -->
+    <div id="gameContent" style="display: none;">
+        <div id="bgLayer" class="bg-layer"></div>
+        <div id="spriteLeft" class="sprite-left">
+            <img id="charSpriteLeft" src="assets/char/protagonist.png" alt="主角">
+        </div>
+        <div id="spriteRight" class="sprite-right">
+            <img id="charSpriteRight" src="" alt="角色立绘" style="display: none;">
+        </div>
+        <div id="statsPanel" class="stats-panel"></div>
+        <div id="dialogArea" class="dialog-area">
+            <div id="dialogName" class="dialog-name"></div>
+            <div id="dialogText" class="dialog-text"></div>
+            <div id="optionsContainer" class="options-container hide"></div>
+            <div id="nextIndicator" class="next-indicator">▼ 点击继续 ▼</div>
+        </div>
     </div>
-    <div id="spriteRight" class="sprite-right">
-        <img id="charSpriteRight" src="" alt="角色立绘" style="display: none;">
-    </div>
-    <div id="statsPanel" class="stats-panel"></div>
-    <div id="dialogArea" class="dialog-area">
-        <div id="dialogName" class="dialog-name"></div>
-        <div id="dialogText" class="dialog-text"></div>
-        <div id="optionsContainer" class="options-container hide"></div>
-        <div id="nextIndicator" class="next-indicator">▼ 点击继续 ▼</div>
-    </div>
+
 </div>
 <script type="module" src="js/main.js"></script>
 </body>
