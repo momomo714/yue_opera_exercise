@@ -537,9 +537,6 @@ scenes.day7_finale = () => {
         });
         return;
     }
-    setSceneEndCallback(() => {
-        setOptions([{ label: "感谢守护，文脉不灭", action: () => {} }]);
-    });
 };
 
 export const scenesMap = scenes;
