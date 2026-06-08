@@ -1,3 +1,4 @@
+import { addToStory, setOptions, setSceneEndCallback, setBackground, setCharacter, clearMessageQueue, showCharacterCards } from './ui.js';
 import { addToStory, setOptions, setSceneEndCallback, setBackground, setCharacter, clearMessageQueue } from './ui.js';
 import { getGameState, modifyState, advanceDay, calculateEnding } from './gameState.js';
 import { storyEngine } from './storyEngine.js';
@@ -505,20 +506,30 @@ scenes.day7_finale = () => {
         addToStory("系统：「完美结局达成。戏班重生，越剧改革成功。你将成为永兴戏班的永久荣誉成员。」", "系统");
         addToStory("周班主：「先生，留在这里吧。戏班永远有你一把椅子。」", "周班主");
         addToStory("我选择留下。因为这里已经是我的家。", "内心");
-        addToStory("【人物卡·袁雪芬】越剧改革先驱。1922-2011，袁派创始人。1942年，她顶着骂声排演《祥林嫂》，连演30场，场场爆满。她说：「越剧要活，就得呼吸时代的空气。」");
-        addToStory("【人物卡·周班主】旧社会班主，扛着几十口人的生计。他们变卖家产、低声下气，只为让戏班活下去。他们是最早的「文脉守护者」。");
-        addToStory("【人物卡·老琴师】越剧主胡革新者。首创过门托腔，让唱腔更有骨血。他记下数百首濒临失传的曲牌，用琴声为改革铺路。");
-        addToStory("【人物卡·小春】旧社会学徒，七八岁签生死契，挨打挨骂。但他们从识字开始，一步步成为流派宗师。小春，是未来的希望。");
+        // 不再用文本输出人物卡，改为显示卡片组件
+        setSceneEndCallback(() => {
+            showCharacterCards(() => {
+                setOptions([{ label: "感谢守护，文脉不灭", action: () => {} }]);
+            });
+        });
     } else if (endingType === "success") {
         addToStory("系统：「成功结局达成。改革胜利，但戏班仍需努力。你带着手抄剧本和合影回到现代。」", "系统");
         addToStory("袁雪芬：「先生，你还会再来吗？」", "袁雪芬");
         addToStory("会的。我永远记得你们。", "主角");
-        addToStory("【人物卡·袁雪芬】越剧改革先驱。\n【人物卡·周班主】文脉守护者。\n【人物卡·老琴师】琴弦不断，血脉不绝。\n【人物卡·小春】每一滴泪，都会浇灌出花朵。");
+        setSceneEndCallback(() => {
+            showCharacterCards(() => {
+                setOptions([{ label: "感谢守护，文脉不灭", action: () => {} }]);
+            });
+        });
     } else if (endingType === "barely") {
         addToStory("系统：「勉强成功。演出平平，观众反应一般，但戏班保住了。」", "系统");
         addToStory("周班主：「先生，下次不要这么冒险了。」", "周班主");
         addToStory("我明白。", "主角");
-        addToStory("【人物卡·袁雪芬】越剧改革先驱。\n【人物卡·周班主】文脉守护者。\n【人物卡·老琴师】琴弦不断。\n【人物卡·小春】未来的希望。");
+        setSceneEndCallback(() => {
+            showCharacterCards(() => {
+                setOptions([{ label: "感谢守护，文脉不灭", action: () => {} }]);
+            });
+        });
     } else {
         addToStory("系统：「任务失败。演出冷场，戏班解散。你困在1942年，风雪中梁祝声渐远......」", "系统");
         addToStory("我终究没能改变历史。但我不后悔来过。", "内心");

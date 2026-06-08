@@ -283,3 +283,101 @@ body {
     .cover-char { width: 15%; max-width: 70px; filter: blur(1.5px); opacity: 0.6; }
     #startGameBtn { font-size: 1rem; padding: 6px 20px; }
 }
+/* 角色卡模态框 */
+.card-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    z-index: 300;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(8px);
+    font-family: 'Segoe UI', '华文楷书', serif;
+}
+.card-container {
+    background: #fef3e2;
+    width: 80%;
+    max-width: 700px;
+    border-radius: 48px;
+    padding: 28px 32px;
+    box-shadow: 0 25px 40px rgba(0,0,0,0.5);
+    border: 1px solid #e2bc84;
+    text-align: center;
+    animation: fadeInUp 0.4s ease;
+}
+.card-avatar {
+    width: 140px;
+    height: 140px;
+    object-fit: contain;
+    margin: 0 auto 16px;
+    border-radius: 50%;
+    background: #f0e2cc;
+    padding: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+}
+.card-name {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #a5572a;
+    border-bottom: 2px solid #dbb87a;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+.card-desc {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #2c1f12;
+    text-align: left;
+    margin: 20px 0;
+    max-height: 300px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+.card-desc p {
+    margin: 12px 0;
+}
+.card-next {
+    background: #8b6946;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    padding: 8px 28px;
+    border-radius: 40px;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: 0.2s;
+}
+.card-next:hover {
+    background: #a57c52;
+    transform: scale(1.02);
+}
+.card-index {
+    margin-top: 12px;
+    font-size: 0.9rem;
+    color: #b38b5a;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@media (max-width: 600px) {
+    .card-container {
+        width: 90%;
+        padding: 20px;
+    }
+    .card-avatar { width: 100px; height: 100px; }
+    .card-name { font-size: 1.5rem; }
+    .card-desc { font-size: 0.9rem; }
+}
