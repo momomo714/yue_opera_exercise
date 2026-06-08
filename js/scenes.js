@@ -1,5 +1,4 @@
 import { addToStory, setOptions, setSceneEndCallback, setBackground, setCharacter, clearMessageQueue, showCharacterCards } from './ui.js';
-import { addToStory, setOptions, setSceneEndCallback, setBackground, setCharacter, clearMessageQueue } from './ui.js';
 import { getGameState, modifyState, advanceDay, calculateEnding } from './gameState.js';
 import { storyEngine } from './storyEngine.js';
 
